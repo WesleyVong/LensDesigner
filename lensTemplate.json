@@ -1,0 +1,15 @@
+{
+  "LensTemplate": {
+    "alias": "None",
+    "diameter": 25.4,
+    "radius": 1,
+    "conic": 0,
+    "coeff": [0,0,0],
+    "radius2": 1,
+    "conic2": 0,
+    "coeff2": [0,0,0],
+    "thickness": 1,
+    "material": "BK7",
+    "type": "biconvex"
+  }
+}
