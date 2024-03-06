@@ -1,7 +1,14 @@
 from PIL import Image, ImageDraw
-import numpy as np
-import lens
+import timeit
+import renderer
+import surface
 
-l = lens.Lens()
-l.LoadLibrary("Thorlabs.json")
-l.LoadPreset("AL2550")
+PAGE_WIDTH = 1000
+PAGE_HEIGHT = 1000
+
+im = renderer.Renderer(PAGE_WIDTH, PAGE_HEIGHT, scale=10)
+s = surface.Polygon([0,0], [[-10,-10],[0,10],[10,-10],[5,-20]])
+
+im.DrawEquation(s.equation, 0, 1, 0.001)
+
+im.ShowImage()

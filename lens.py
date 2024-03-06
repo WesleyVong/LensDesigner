@@ -42,7 +42,7 @@ class Lens(object):
             self._r = -self._r
             self._c = -self._c
 
-# Back Surface
+        # Back Surface
         self._r2 = self._config.get("radius2")
         self._k2 = self._config.get("conic2")
         self._c2 = np.asarray(self._config.get("coeff2"))
