@@ -1,0 +1,10 @@
+{
+  "Air": {
+    "name": "Air",
+    "formula": "air",
+    "bVals": [0.05792105, 0.00167917],
+    "cVals": [238.0185, 57.362],
+    "minMicrons": 0.23,
+    "maxMicrons": 1.69
+  }
+}
