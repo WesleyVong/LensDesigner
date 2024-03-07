@@ -50,12 +50,12 @@ class Polygon(Surface):
             self._edges.append([dx, dy])
 
     def equation(self, t):
-        t = t - np.floor(t)
-        t_scaled = t / (1 / self._edgeNum)
-        edge = self._edges[int(np.floor(t_scaled))]
-        progress = t_scaled - np.floor(t_scaled)
-        pos = self._vertices[int(np.floor(t_scaled))]
-        dx = progress * edge[0]
+        t = t - np.floor(t)     # Wrap the t value between 0 and 1
+        t_scaled = t / (1 / self._edgeNum)  # Scale t to the length of a side
+        edge = self._edges[int(np.floor(t_scaled))]     # Find which edge we are on
+        progress = t_scaled - np.floor(t_scaled)    # Find the progress within the edge
+        pos = self._vertices[int(np.floor(t_scaled))]   # Find the position of the starting vertex
+        dx = progress * edge[0]     # Calculate Offset for dx and dy
         dy = progress * edge[1]
         return [pos[0]+dx, pos[1]+dy]
 
@@ -67,6 +67,8 @@ class Ray(Surface):
         self._material = mat
 
     def equation(self, t):
+        t = t - np.floor(t)
         pos_x = self._pos[0] + t * self._dx
         pos_y = self._pos[1] + t * self._dy
         return [pos_x, pos_y]
+
