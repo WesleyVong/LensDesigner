@@ -1,20 +1,48 @@
 import numpy as np
 from surface import Surface
+from material import Material
 
 
 class Ray(Surface):
-    def __init__(self, pos, ang, mag=1, wavelengths=[]):
+    def __init__(self, pos, ang, mag=1, wavelengths=[], hits=0):
         self._pos = pos
+        self._ang = ang
+        self._mag = mag
         self._dx = np.cos(ang) * mag
         self._dy = np.sin(ang) * mag
         self._wavelengths = wavelengths
+        self._hits = hits
+        self._end_t = 1
 
     def equation(self, t, n=0):
-        t = t - np.floor(t)
+        # t = t - np.floor(t)
         pos_x = self._pos[0] + t * self._dx
         pos_y = self._pos[1] + t * self._dy
         return [pos_x, pos_y]
 
+    def tangent(self, t, n=0):
+        return self.normalize(self._dx, self._dy)
+
     @property
     def num_equations(self):
         return 1
+
+    @property
+    def wavelengths(self):
+        return self._wavelengths
+
+    @property
+    def hits(self):
+        return self._hits
+
+    @hits.setter
+    def hits(self, hits):
+        self._hits = hits
+
+    @property
+    def end_t(self):
+        return self._end_t
+
+    @end_t.setter
+    def end_t(self, end_t):
+        self._end_t = end_t

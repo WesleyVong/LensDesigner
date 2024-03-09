@@ -1,13 +1,9 @@
 from PIL import Image, ImageDraw
 import numpy as np
-import scipy
-import timeit
-
-import ray
-import lens
+from ray import Ray
 
 class Renderer:
-    def __init__(self, width=512, height=512, scale=1,bg=(255,255,255)):
+    def __init__(self, width=512, height=512, scale=1, bg=(255,255,255)):
         self.width = width
         self.height = height
         self.scale = scale
@@ -47,10 +43,21 @@ class Renderer:
             self.drawing.point(localCoords, fill=color)
             # self.image.putpixel(localCoords, color)
 
-    def DrawRay(self, r):
-        startXY = self.ConvertXY(r.Equation(r.start))
-        endXY = self.ConvertXY(r.Equation(r.end))
-        self.drawing.line([startXY,endXY],fill=(WavelengthToRGB(r.microns)))
+    def draw_ray(self, ray: Ray):
+        start_pos = self.ConvertXY(ray.equation(0))
+        end_pos = self.ConvertXY(ray.equation(ray.end_t))
+        mixed_color = [0,0,0]
+        for wavelength in ray.wavelengths:
+            color = wavelength_to_rgb(wavelength)
+            mixed_color[0] += color[0]
+            mixed_color[1] += color[1]
+            mixed_color[2] += color[2]
+        num_wavelengths = len(ray.wavelengths)
+        mixed_color[0] /= num_wavelengths
+        mixed_color[1] /= num_wavelengths
+        mixed_color[2] /= num_wavelengths
+        # print((int(mixed_color[0]), int(mixed_color[1]), int(mixed_color[2])))
+        self.drawing.line([start_pos,end_pos],fill=(int(mixed_color[0]), int(mixed_color[1]), int(mixed_color[2])))
 
     def DrawLens(self, l, detail=50):
         points = []
@@ -77,7 +84,7 @@ class Renderer:
     def SaveImage(self, name="img"):
         self.image.save("{}.png".format(name))
 
-def WavelengthToRGB(microns):
+def wavelength_to_rgb(microns):
     wavelength = microns * 1000
     r = 0
     g = 0
@@ -123,4 +130,4 @@ def WavelengthToRGB(microns):
     r = r * factor
     g = g * factor
     b = b * factor
-    return (int(r * 255), int(g*255), int(b*255))
+    return int(r * 255), int(g*255), int(b*255)

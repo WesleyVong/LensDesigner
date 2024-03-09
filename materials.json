@@ -6,5 +6,21 @@
     "cVals": [238.0185, 57.362],
     "minMicrons": 0.23,
     "maxMicrons": 1.69
+  },
+  "BK7": {
+    "name": "BK7",
+    "formula": "sellmeier",
+    "bVals": [1.03961212, 0.231792344, 1.01046945],
+    "cVals": [0.00600069867, 0.0200179144, 103.560653],
+    "minMicrons": 0.3,
+    "maxMicrons": 2.5
+  },
+  "SF11": {
+    "name": "SF11",
+    "formula": "sellmeier",
+    "bVals": [1.73759695, 0.313747346, 1.89878101],
+    "cVals": [0.013188707, 0.0623068142, 155.23629],
+    "minMicrons": 0.37,
+    "maxMicrons": 2.5
   }
 }

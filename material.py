@@ -1,4 +1,21 @@
 import numpy as np
+import warnings
+import json
+
+
+class MaterialLibrary:
+    def __init__(self, f: str):
+        with open(f) as json_file:
+            materials = json.load(json_file)
+        material_names = list(materials)
+        self._library = {}
+        for name in material_names:
+            mat = Material()
+            mat.load_from_dict(materials.get(name))
+            self._library[name] = mat
+
+    def get(self, name):
+        return self._library.get(name)
 
 class Material:
     def __init__(self):
@@ -34,7 +51,7 @@ class Material:
         if self._formula is None:
             raise Exception("No formula defined for the material: {}".format(self._name))
         if microns > self._maxMicrons or microns < self._minMicrons:
-            raise Warning("Wavelength exceeds defined wavelength range for the material: {}".format(self._name))
+            warnings.warn("Wavelength exceeds defined wavelength range for the material: {}".format(self._name))
 
         # wavelength squared
         lsq = microns ** 2

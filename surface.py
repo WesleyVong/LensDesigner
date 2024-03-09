@@ -10,10 +10,25 @@ class Surface(ABC):
     def equation(self, t, n=0):
         pass
 
+    @abstractmethod
+    # Returns tangent vector for equation
+    def tangent(self, t, n=0):
+        pass
+
     @property
     @abstractmethod
     def num_equations(self):
-        return 0
+        pass
+
+    @property
+    def material(self):
+        return None
+
+    def normalize(self, x, y):
+        mag = np.sqrt(x**2 + y**2)
+        if mag == 0:
+            return [0,0]
+        return [x/mag, y/mag]
 
 
 class Polygon(Surface):
@@ -45,6 +60,14 @@ class Polygon(Surface):
         dy = t * edge[1]
         return [pos[0]+dx, pos[1]+dy]
 
+    def tangent(self, t, n=0):
+        edge = self._edges[n]
+        return self.normalize(edge[0], edge[1])
+
     @property
     def num_equations(self):
         return self._edgeNum
+
+    @property
+    def material(self):
+        return self._material
