@@ -81,25 +81,27 @@ class Lens(Surface):
 
         self._edge_thickness = np.abs(edge1 - edge0)
 
-    def equation(self, t):
+    def equation(self, t, n=0):
         t = t - np.floor(t)
-        if t < 0.25:    # Surface 1
-            t_scaled = (t - 0.125) * 8
+        if n == 0:    # Surface 1
+            t_scaled = (t - 0.5) * 2
             t_scaled = t_scaled * self._radius
             x = aspheric_lens_equation(t_scaled, self._r0, self._k0, self._a0)
             return [self._pos[0] + x, self._pos[1] + t_scaled]
-        elif t <= 0.5:  # Top Connecting Line
-            t_scaled = (t - 0.25) * 4
-            t_scaled = t_scaled * self._edge_thickness
+        elif n == 1:  # Top Connecting Line
+            t_scaled = t * self._edge_thickness
             x = self._pos[0] + self._bound0 + t_scaled
             return [x, self._pos[1] + self._radius]
-        elif t < 0.75:  # Surface 2
-            t_scaled = (t - 0.625) * 8
+        elif n == 2:  # Surface 2
+            t_scaled = (t - 0.5) * 2
             t_scaled = t_scaled * self._radius
             x = aspheric_lens_equation(t_scaled, self._r1, self._k1, self._a1)
             return [self._pos[0] + self._thickness + x, self._pos[1] - t_scaled]
         else:   # Bottom Connecting Line
-            t_scaled = (t - 0.75) * 4
-            t_scaled = t_scaled * self._edge_thickness
+            t_scaled = t * self._edge_thickness
             x = self._pos[0] + self._thickness + self._bound1 - t_scaled
             return [x, self._pos[1] - self._radius]
+
+    @property
+    def num_equations(self):
+        return 4

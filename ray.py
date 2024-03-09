@@ -1,30 +1,20 @@
 import numpy as np
+from surface import Surface
 
-class Ray:
-    def __init__(self, pos ,angle, microns=0.6):
-        self.pos = pos
-        self.angle = angle
-        self.microns = microns
-        self.start = 0
-        self.end = 100000
-        self._dx = np.cos(self.angle)
-        self._dy = np.sin(self.angle)
 
-    def Equation(self, t):
-        return [self._dx*t + self.pos[0], self._dy*t + self.pos[1]]
+class Ray(Surface):
+    def __init__(self, pos, ang, mag=1, wavelengths=[]):
+        self._pos = pos
+        self._dx = np.cos(ang) * mag
+        self._dy = np.sin(ang) * mag
+        self._wavelengths = wavelengths
 
-    # Sets the last value of t of the ray
-    def SetEnd(self, end):
-        self.end = end
-
-    # Sets the last value of t of the ray
-    def SetStart(self, start):
-        self.start = start
+    def equation(self, t, n=0):
+        t = t - np.floor(t)
+        pos_x = self._pos[0] + t * self._dx
+        pos_y = self._pos[1] + t * self._dy
+        return [pos_x, pos_y]
 
     @property
-    def dx(self):
-        return self._dx
-
-    @property
-    def dy(self):
-        return self._dy
+    def num_equations(self):
+        return 1

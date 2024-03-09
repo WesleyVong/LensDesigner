@@ -23,13 +23,13 @@ class Renderer:
         return (newX, newY)
 
     # Draws parametric equation
-    def DrawEquation(self, f, tmin, tmax, step=-1,color=(0,0,0)):
+    def DrawEquation(self, f, tmin, tmax, step=-1,color=(0,0,0), args=[]):
         if step == -1:
             step = 1/self.scale
         inDrawing = True
         prevDist = np.inf
         for t in np.arange(tmin, tmax+step, step):
-            coords = f(t)
+            coords = f(t, *args)
             if np.isnan(coords[0]) or np.isnan(coords[1]):
                 return
             localCoords = self.ConvertXY(coords)
