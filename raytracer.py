@@ -50,11 +50,18 @@ def raytrace(ray: Ray, surf: surface.Surface, atmo: Material):
     r_tangent = ray.tangent(min_t[0])
     s_tangent = surf.tangent(min_t[1], min_e)
     s_ortho = [-s_tangent[1], s_tangent[0]]
+    s_ortho_angle = np.arctan(s_ortho[1]/s_ortho[0])
 
     dot = np.dot(r_tangent, s_ortho)
+    if s_ortho[1] < 0:  # Potential bugs here is depending on which of s_ortho is negative
+        dot = -dot
     theta = np.arccos(dot)
-    if s_ortho[1] < 0:
-        theta = -theta
+    if theta > np.pi/2:
+        theta = theta - np.pi
+    if theta < -np.pi/2:
+        theta = theta + np.pi
+
+    # print("r_tangent {} s_ortho {} theta {}".format(r_tangent, s_ortho, theta))
 
     new_rays = []
     object_material = surf.material
@@ -66,7 +73,7 @@ def raytrace(ray: Ray, surf: surface.Surface, atmo: Material):
         else:
             n0 = object_material.get_ior(wavelength)
             n1 = atmo.get_ior(wavelength)
-        angle = calculate_refraction(theta, n0, n1)
+        angle = s_ortho_angle - calculate_refraction(theta, n0, n1)
         if np.isnan(angle):
             continue
         new_ray = Ray(hit_pos, angle, mag=100, wavelengths=[wavelength], hits=ray.hits+1)

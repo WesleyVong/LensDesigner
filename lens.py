@@ -91,12 +91,12 @@ class Lens(Surface):
                 self._k1 = self._k0
                 self._a1 = -np.array(self._a0)
 
-            if type == "planoconvex" or type == "planoconcave":
+            if lens_type == "planoconvex" or lens_type == "planoconcave":
                 self._r1 = np.inf
-            if type == "biconvex":
+            if lens_type == "biconvex":
                 self._r1 = -self._r1
                 self._a1 = -self._a1
-            if type == "biconcave":
+            if lens_type == "biconcave":
                 pass
 
         if self._dir == "left":

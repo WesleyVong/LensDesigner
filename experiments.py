@@ -8,8 +8,9 @@ import ray
 from lens import Lens
 from material import MaterialLibrary, Material
 import scipy
+import timeit
 
-PAGE_WIDTH = 1000
+PAGE_WIDTH = 2000
 PAGE_HEIGHT = 1000
 EPSILON = 0.00001
 
@@ -22,11 +23,11 @@ with open('Thorlabs.json') as json_file:
 
 im = renderer.Renderer(PAGE_WIDTH, PAGE_HEIGHT, scale=10)
 initial_rays = []
-for i in np.linspace(-9,9,20):
-    initial_rays.append(ray.Ray([-20,i], 0,100, wavelengths=[.4, .5, .7]))
+for i in np.linspace(-9,9,2000):
+    initial_rays.append(ray.Ray([-20,i], 0,100, wavelengths=[.4, .7]))
 l = Lens([0,0], material_library)
 # l.load_values(20,10,20, r1=-20, material='BK7')
-l.load_from_dict(lens_library.get("LB1811"))
+l.load_from_dict(lens_library.get("AL2550"))
 
 
 def distance(T, f0, f1, n0=0, n1=0):
@@ -52,6 +53,8 @@ im.DrawGrid([10,10])
 for e in range(l.num_equations):
     im.DrawEquation(l.equation, 0, 1, 0.01, args=[e])
 
+start_time = timeit.default_timer()
+
 all_rays = []
 for ray in initial_rays:
     all_rays.append(ray)
@@ -70,13 +73,14 @@ for ray in first_hit:
         second_hit.append(r)
         all_rays.append(r)
 
-for ray in all_rays:
-    im.draw_ray(ray)
+# for ray in all_rays:
+#     im.draw_ray(ray)
+
+print(timeit.default_timer() - start_time)
 
 # root = scipy.optimize.root(distance, x0=[0, 0], args=(first_hit[1].equation, l.equation, 0, 2),
 #                                    options={'maxfev': 50,
 #                                             'xtol': EPSILON})
 # print(root)
-
-im.ShowImage()
-im.SaveImage('raytracer2-LB1811.png')
+#
+# im.ShowImage()

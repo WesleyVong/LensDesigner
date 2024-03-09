@@ -136,10 +136,11 @@ if __name__ == '__main__':
     lib = json.load(f)
 
     lens3 = lensassembly.LensAssembly([0,0],lib, sensorOffset=FLANGE_DISTANCE, sensorHeight=SENSOR_HEIGHT)
-    lens3.AddLens("LA1805")# 30mm Focal Length PlanoConvex
-    lens3.AddLens("LD2297",5.4)# -25mm Focal Length BiConcave
-    lens3.AddLens("LA1805",5,"right")# 30mm Focal Length PlanoConvex
-    print(lens3)
+    lens3.AddLens("LB1811")
+    # lens3.AddLens("LA1805")# 30mm Focal Length PlanoConvex
+    # lens3.AddLens("LD2297",5.4)# -25mm Focal Length BiConcave
+    # lens3.AddLens("LA1805",5,"right")# 30mm Focal Length PlanoConvex
+    # print(lens3)
 
     DIR = 15 * np.pi/180
 
@@ -177,10 +178,10 @@ if __name__ == '__main__':
     lights = []
     lights.append(emitter.Emitter([-1000, 0],RAYS,0,PLANE_WIDTH, microns=WAVELENGTH_R,type="plane"))
     lights.append(emitter.Emitter([-1000, 0], RAYS, 0, PLANE_WIDTH, microns=WAVELENGTH_V, type="plane"))
-    lights.append(emitter.Emitter([-1000, -emity],RAYS,DIR,size=PLANE_WIDTH, microns=WAVELENGTH_R,type="plane"))
-    lights.append(emitter.Emitter([-1000, -emity], RAYS, DIR, size=PLANE_WIDTH, microns=WAVELENGTH_V, type="plane"))
-    lights.append(emitter.Emitter([-1000, emity], RAYS, -DIR, size=PLANE_WIDTH, microns=WAVELENGTH_R, type="plane"))
-    lights.append(emitter.Emitter([-1000, emity], RAYS, -DIR, size=PLANE_WIDTH,microns=WAVELENGTH_V, type="plane"))
+    # lights.append(emitter.Emitter([-1000, -emity],RAYS,DIR,size=PLANE_WIDTH, microns=WAVELENGTH_R,type="plane"))
+    # lights.append(emitter.Emitter([-1000, -emity], RAYS, DIR, size=PLANE_WIDTH, microns=WAVELENGTH_V, type="plane"))
+    # lights.append(emitter.Emitter([-1000, emity], RAYS, -DIR, size=PLANE_WIDTH, microns=WAVELENGTH_R, type="plane"))
+    # lights.append(emitter.Emitter([-1000, emity], RAYS, -DIR, size=PLANE_WIDTH,microns=WAVELENGTH_V, type="plane"))
 
     rays, finalrays = RayTrace(lights, lens3)
 
@@ -196,10 +197,10 @@ if __name__ == '__main__':
     lights = []
     lights.append(emitter.Emitter([-1000, 0],20,0,PLANE_WIDTH, microns=WAVELENGTH_R,type="plane"))
     lights.append(emitter.Emitter([-1000, 0], 20, 0, PLANE_WIDTH, microns=WAVELENGTH_V, type="plane"))
-    lights.append(emitter.Emitter([-1000, -emity],20,DIR,size=PLANE_WIDTH, microns=WAVELENGTH_R,type="plane"))
-    lights.append(emitter.Emitter([-1000, -emity], 20, DIR, size=PLANE_WIDTH, microns=WAVELENGTH_V, type="plane"))
-    lights.append(emitter.Emitter([-1000, emity], 20, -DIR, size=PLANE_WIDTH, microns=WAVELENGTH_R, type="plane"))
-    lights.append(emitter.Emitter([-1000, emity], 20, -DIR, size=PLANE_WIDTH,microns=WAVELENGTH_V, type="plane"))
+    # lights.append(emitter.Emitter([-1000, -emity],20,DIR,size=PLANE_WIDTH, microns=WAVELENGTH_R,type="plane"))
+    # lights.append(emitter.Emitter([-1000, -emity], 20, DIR, size=PLANE_WIDTH, microns=WAVELENGTH_V, type="plane"))
+    # lights.append(emitter.Emitter([-1000, emity], 20, -DIR, size=PLANE_WIDTH, microns=WAVELENGTH_R, type="plane"))
+    # lights.append(emitter.Emitter([-1000, emity], 20, -DIR, size=PLANE_WIDTH,microns=WAVELENGTH_V, type="plane"))
 
     rays, finalrays = RayTrace(lights, lens3)
 
