@@ -20,24 +20,20 @@ for i in np.linspace(-9,9,1000):
 l = Lens([0,0], material_library, fast=True)
 l.load_from_dict(lens_library.get("AL2550"))
 
-def compute():
-    all_rays = []
-    for ray in initial_rays:
-        all_rays.append(ray)
 
+def compute():
     first_hit = []
     for ray in initial_rays:
         rays = raytracer.raytrace(ray, l, atmo=material_library.get('Air'), fast=FAST)
         for r in rays:
             first_hit.append(r)
-            all_rays.append(r)
 
     second_hit = []
     for ray in first_hit:
         rays = raytracer.raytrace(ray, l, atmo=material_library.get('Air'), fast=FAST)
         for r in rays:
             second_hit.append(r)
-            all_rays.append(r)
+    all_rays = initial_rays + first_hit + second_hit
     return all_rays
 
 

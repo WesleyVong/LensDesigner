@@ -33,8 +33,6 @@ def raytrace(ray: Ray, surf: surface.Surface, atmo: Material, fast=False, epsilo
         root = scipy.optimize.root(distance, x0=[0, 0], args=(ray.equation, surf.equation, 0, e), method='hybr',
                                    options={'maxfev': 20,
                                             'xtol': EPSILON})
-        # if e == 2:
-        #     print(root)
         if root.get('success'):
             t = root.get('x')
             if 0 <= t[0] < min_t[0]:
@@ -53,7 +51,6 @@ def raytrace(ray: Ray, surf: surface.Surface, atmo: Material, fast=False, epsilo
     s_ortho_angle = math.atan(s_ortho[1]/s_ortho[0])
 
     dot = r_tangent[0] * s_ortho[0] + r_tangent[1] * s_ortho[1]  # Faster than np.dot
-    # dot = np.dot(r_tangent, s_ortho)
     if s_ortho[1] < 0:  # Potential bugs here is depending on which of s_ortho is negative
         dot = -dot
     theta = math.acos(dot)
@@ -86,10 +83,11 @@ def raytrace(ray: Ray, surf: surface.Surface, atmo: Material, fast=False, epsilo
         new_rays.append(new_ray)
 
     if fast:
+        angles_num = len(angles)
         diff = abs(max(angles) - min(angles))
-        angles_avg = sum(angles) / len(angles)
+        angles_avg = sum(angles) / angles_num
         if diff > epsilon:
-            for i in range(len(angles)):
+            for i in range(angles_num):
                 # If the difference between light scatter is greater than EPSILON, we use separate rays
                 new_ray = Ray(hit_pos, angles[i], mag=100, wavelengths=[ray.wavelengths[i]], hits=ray.hits + 1)
                 new_rays.append(new_ray)

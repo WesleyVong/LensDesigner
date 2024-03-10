@@ -155,6 +155,8 @@ class Lens(Surface):
             return [x, self._pos[1] - self._radius]
 
     def tangent(self, t, n=0):
+        if n >= 2:
+            return [1,0]
         pos0 = self.equation(t+EPSILON, n)
         pos1 = self.equation(t-EPSILON, n)
         dx = pos1[0] - pos0[0]

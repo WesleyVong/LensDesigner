@@ -23,7 +23,7 @@ with open('Thorlabs.json') as json_file:
 
 im = renderer.Renderer(PAGE_WIDTH, PAGE_HEIGHT, scale=10)
 initial_rays = []
-for i in np.linspace(-9,9,1000):
+for i in np.linspace(-9,9,10):
     initial_rays.append(ray.Ray([-20,i], 0,100, wavelengths=[.4, .7]))
 l = Lens([0,0], material_library, fast=True)
 # l.load_values(20,10,20, r1=-20, material='BK7')
@@ -54,23 +54,18 @@ for e in range(l.num_equations):
     im.DrawEquation(l.equation, 0, 1, 0.01, args=[e])
 
 def compute():
-    all_rays = []
-    for ray in initial_rays:
-        all_rays.append(ray)
-
     first_hit = []
     for ray in initial_rays:
         rays = raytracer.raytrace(ray, l, atmo=material_library.get('Air'), fast=FAST)
         for r in rays:
             first_hit.append(r)
-            all_rays.append(r)
 
     second_hit = []
     for ray in first_hit:
         rays = raytracer.raytrace(ray, l, atmo=material_library.get('Air'), fast=FAST)
         for r in rays:
             second_hit.append(r)
-            all_rays.append(r)
+    all_rays = initial_rays + first_hit + second_hit
     return all_rays
 
 

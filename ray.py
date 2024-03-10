@@ -14,6 +14,8 @@ class Ray(Surface):
         self._hits = hits
         self._end_t = 1
 
+        self._tangent = [math.cos(ang), math.sin(ang)]
+
     def equation(self, t, n=0):
         # t = t - np.floor(t)
         pos_x = self._pos[0] + t * self._dx
@@ -21,7 +23,7 @@ class Ray(Surface):
         return [pos_x, pos_y]
 
     def tangent(self, t, n=0):
-        return self.normalize(self._dx, self._dy)
+        return self._tangent
 
     @property
     def num_equations(self):
