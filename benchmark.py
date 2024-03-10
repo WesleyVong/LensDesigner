@@ -53,11 +53,8 @@ if __name__ == '__main__':
 
     lens3 = lensassembly.LensAssembly([0,0],lib, sensorOffset=FLANGE_DISTANCE, sensorHeight=SENSOR_HEIGHT)
     lens3.AddLens("AL2550")
-    print(lens3)
 
-    DIR = 15 * np.pi/180
-
-    RAYS = 1000
+    RAYS = 10000
     PLANE_WIDTH = 18
     lights = []
     lights.append(emitter.Emitter([-1000, 0],RAYS,0,PLANE_WIDTH, microns=WAVELENGTH_R,type="plane"))
