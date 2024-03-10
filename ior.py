@@ -1,4 +1,4 @@
-import numpy as np
+import math
 import warnings
 # Refractive Index of air based on wavelength
 # Air from 0.23-1.69um
@@ -26,7 +26,7 @@ def BK7RefractiveIndex(microns):
     coeffb = [0.00600069867, 0.0200179144, 103.560653]
     # n squared minus 1
     nsqm1 = (coeffa[0]*lsq)/(lsq-coeffb[0])+(coeffa[1]*lsq)/(lsq-coeffb[1])+(coeffa[2]*lsq)/(lsq-coeffb[2])
-    return np.sqrt(nsqm1 + 1)
+    return math.sqrt(nsqm1 + 1)
 
 # Refractive Index of the material based on wavelength
 # N-SF-11 Glass from 0.37-2.5um
@@ -40,7 +40,7 @@ def SF11RefractiveIndex(microns):
     coeffb = [0.013188707, 0.0623068142, 155.23629]
     # n squared minus 1
     nsqm1 = (coeffa[0]*lsq)/(lsq-coeffb[0])+(coeffa[1]*lsq)/(lsq-coeffb[1])+(coeffa[2]*lsq)/(lsq-coeffb[2])
-    return np.sqrt(nsqm1 + 1)
+    return math.sqrt(nsqm1 + 1)
 
 # Refractive Index of the material based on wavelength
 # CaF2 Glass from 0.23-9.7um
@@ -54,7 +54,7 @@ def CaF2RefractiveIndex(microns):
     coeffb = [0.050263605, 0.1003909, 34.649040]
     # n squared minus 1
     nsqm1 = (coeffa[0]*lsq)/(lsq-coeffb[0])+(coeffa[1]*lsq)/(lsq-coeffb[1])+(coeffa[2]*lsq)/(lsq-coeffb[2])
-    return np.sqrt(nsqm1 + 1)
+    return math.sqrt(nsqm1 + 1)
 
 # Refractive Index of the material based on wavelength
 # LAH Glass from 0.32-2.4um
@@ -68,7 +68,7 @@ def LAHRefractiveIndex(microns):
     coeffb = [0.0090482329, 0.0330756689, 89.3675501]
     # n squared minus 1
     nsqm1 = (coeffa[0]*lsq)/(lsq-coeffb[0])+(coeffa[1]*lsq)/(lsq-coeffb[1])+(coeffa[2]*lsq)/(lsq-coeffb[2])
-    return np.sqrt(nsqm1 + 1)
+    return math.sqrt(nsqm1 + 1)
 
 def GetIOR(microns, material="BK7"):
     if material == "BK7":

@@ -1,4 +1,5 @@
 import numpy as np
+import math
 import ior
 import json
 
@@ -98,7 +99,7 @@ class Lens(object):
 
         if r == 0:
             return [x, y]
-        sphr = t ** 2 / (r * (1 + np.sqrt(1 - (1 + k) * (t ** 2) / (r ** 2))))
+        sphr = t ** 2 / (r * (1 + math.sqrt(1 - (1 + k) * (t ** 2) / (r ** 2))))
         poly = 0
         for idx in range(len(c)):
             poly = poly + c[idx] * t ** ((idx + 2) * 2)

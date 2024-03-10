@@ -1,6 +1,7 @@
 import numpy as np
 import scipy
 import ray
+import math
 import lens
 import timeit
 
@@ -8,10 +9,10 @@ import timeit
 # Input: angle of incidence (radians), material 1 refractive index, material 2 refractive index
 def CalculateRefraction(angle, n1, n2):
     # sin of the angle of refraction
-    sref = (n1/n2) * np.sin(angle)
+    sref = (n1/n2) * math.sin(angle)
     if sref > 1 or sref < -1:
-        return np.nan
-    ret = np.arcsin(sref)
+        return math.nan
+    ret = math.asin(sref)
     return ret
 
 # Calculates intersection point, T for both parametric equations
@@ -50,13 +51,13 @@ def CalculateIncidentAngle(f0, f1, T):
     # Find normal of tangent
     f1n = CalculateNormal(f1t)
     if (f0t[0] == 0):
-        f01 = np.pi/2
+        f01 = math.pi/2
     else:
-        f0a = np.arctan(f0t[1] / f0t[0])
+        f0a = math.atan(f0t[1] / f0t[0])
     if (f1n[0] == 0):
-        f1na = np.pi/2
+        f1na = math.pi/2
     else:
-        f1na = np.arctan(f1n[1] / f1n[0])
+        f1na = math.atan(f1n[1] / f1n[0])
     angle = f0a - f1na
 
     return angle
@@ -76,7 +77,7 @@ def GenerateRefractedRay(r, l, n0, n1):
 
     if not intersection[1]:
         return []
-    if np.abs(intersection[0][1]) > radius:
+    if abs(intersection[0][1]) > radius:
         return []
 
     incident = CalculateIncidentAngle(req, leq, intersection[0])
@@ -87,7 +88,7 @@ def GenerateRefractedRay(r, l, n0, n1):
     ln = CalculateNormal(lt)
 
     # Find normal angle relative to x axis
-    la = np.arctan(ln[1]/ln[0])
+    la = math.atan(ln[1]/ln[0])
 
     # Ray angle
     ra = la + refraction
@@ -107,7 +108,7 @@ def GenerateRefractedRay(r, l, n0, n1):
     intersection = CalculateIntersection(req, leq, x0=x0)
     if not intersection[1]:
         return [fRay]
-    if np.abs(intersection[0][1]) > radius:
+    if abs(intersection[0][1]) > radius:
         return [fRay]
 
     incident = CalculateIncidentAngle(req, leq, intersection[0])
@@ -118,7 +119,7 @@ def GenerateRefractedRay(r, l, n0, n1):
     ln = CalculateNormal(lt)
 
     # Find normal angle relative to x axis
-    la = np.arctan(ln[1] / ln[0])
+    la = math.atan(ln[1] / ln[0])
 
     # Ray angle
     ra = la + refraction

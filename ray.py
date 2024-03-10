@@ -1,4 +1,4 @@
-import numpy as np
+import math
 
 class Ray:
     def __init__(self, pos ,angle, microns=0.6):
@@ -7,8 +7,8 @@ class Ray:
         self.microns = microns
         self.start = 0
         self.end = 100000
-        self._dx = np.cos(self.angle)
-        self._dy = np.sin(self.angle)
+        self._dx = math.cos(self.angle)
+        self._dy = math.sin(self.angle)
 
     def Equation(self, t):
         return [self._dx*t + self.pos[0], self._dy*t + self.pos[1]]
