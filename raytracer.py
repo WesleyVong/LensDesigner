@@ -1,4 +1,4 @@
-import numpy as np
+import math
 import scipy
 import surface
 from ray import Ray
@@ -12,26 +12,26 @@ def distance(T, f0, f1, n0=0, n1=0):
     pos0 = f0(T[0], n0)
     pos1 = f1(T[1], n1)
     # Distanced multiplied to allow for more precise root optimization
-    return [(pos0[0] - pos1[0])*100, (pos0[1] - pos1[1])*100]
+    return [(pos0[0] - pos1[0])*10, (pos0[1] - pos1[1])*10]
 
 
 def calculate_refraction(theta, n0, n1):
     # Using Snell's Law
-    sin_ref = (n0/n1) * np.sin(theta)
+    sin_ref = (n0/n1) * math.sin(theta)
     if sin_ref > 1 or sin_ref < -1:
-        return np.nan
-    return np.arcsin(sin_ref)
+        return math.nan
+    return math.asin(sin_ref)
 
 
-def raytrace(ray: Ray, surf: surface.Surface, atmo: Material):
+def raytrace(ray: Ray, surf: surface.Surface, atmo: Material, fast=False, epsilon=0.001):
     # Finds intersection between ray and surface
     # Atmo represents the surrounding material i.e. air
     intersect_t = []
-    min_t = [np.inf, np.inf]
+    min_t = [math.inf, math.inf]
     min_e = -1
     for e in range(surf.num_equations):
-        root = scipy.optimize.root(distance, x0=[0, 0], args=(ray.equation, surf.equation, 0, e),
-                                   options={'maxfev': 50,
+        root = scipy.optimize.root(distance, x0=[0, 0], args=(ray.equation, surf.equation, 0, e), method='hybr',
+                                   options={'maxfev': 20,
                                             'xtol': EPSILON})
         # if e == 2:
         #     print(root)
@@ -50,21 +50,24 @@ def raytrace(ray: Ray, surf: surface.Surface, atmo: Material):
     r_tangent = ray.tangent(min_t[0])
     s_tangent = surf.tangent(min_t[1], min_e)
     s_ortho = [-s_tangent[1], s_tangent[0]]
-    s_ortho_angle = np.arctan(s_ortho[1]/s_ortho[0])
+    s_ortho_angle = math.atan(s_ortho[1]/s_ortho[0])
 
-    dot = np.dot(r_tangent, s_ortho)
+    dot = r_tangent[0] * s_ortho[0] + r_tangent[1] * s_ortho[1]  # Faster than np.dot
+    # dot = np.dot(r_tangent, s_ortho)
     if s_ortho[1] < 0:  # Potential bugs here is depending on which of s_ortho is negative
         dot = -dot
-    theta = np.arccos(dot)
-    if theta > np.pi/2:
-        theta = theta - np.pi
-    if theta < -np.pi/2:
-        theta = theta + np.pi
+    theta = math.acos(dot)
+    if theta > math.pi/2:
+        theta = theta - math.pi
+    if theta < -math.pi/2:
+        theta = theta + math.pi
 
     # print("r_tangent {} s_ortho {} theta {}".format(r_tangent, s_ortho, theta))
 
     new_rays = []
     object_material = surf.material
+
+    angles = []
 
     for wavelength in ray.wavelengths:
         if ray.hits % 2 == 0:  # Either hasn't hit anything or just left an object
@@ -74,8 +77,24 @@ def raytrace(ray: Ray, surf: surface.Surface, atmo: Material):
             n0 = object_material.get_ior(wavelength)
             n1 = atmo.get_ior(wavelength)
         angle = s_ortho_angle - calculate_refraction(theta, n0, n1)
-        if np.isnan(angle):
+        if fast:
+            angles.append(angle)
             continue
-        new_ray = Ray(hit_pos, angle, mag=100, wavelengths=[wavelength], hits=ray.hits+1)
+        elif math.isnan(angle):
+            continue
+        new_ray = Ray(hit_pos, angle, mag=100, wavelengths=[wavelength], hits=ray.hits + 1)
         new_rays.append(new_ray)
+
+    if fast:
+        diff = abs(max(angles) - min(angles))
+        angles_avg = sum(angles) / len(angles)
+        if diff > epsilon:
+            for i in range(len(angles)):
+                # If the difference between light scatter is greater than EPSILON, we use separate rays
+                new_ray = Ray(hit_pos, angles[i], mag=100, wavelengths=[ray.wavelengths[i]], hits=ray.hits + 1)
+                new_rays.append(new_ray)
+        else:
+            new_ray = Ray(hit_pos, angles_avg, mag=100, wavelengths=ray.wavelengths, hits=ray.hits + 1)
+            new_rays.append(new_ray)
+
     return new_rays

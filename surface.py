@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod, abstractproperty
-import numpy as np
+import math
 from material import Material
 
 
@@ -25,7 +25,7 @@ class Surface(ABC):
         return None
 
     def normalize(self, x, y):
-        mag = np.sqrt(x**2 + y**2)
+        mag = math.sqrt(x**2 + y**2)
         if mag == 0:
             return [0,0]
         return [x/mag, y/mag]
@@ -53,7 +53,7 @@ class Polygon(Surface):
             self._edges.append([dx, dy])
 
     def equation(self, t, n=0):
-        t = t - np.floor(t)     # Wrap the t value between 0 and 1
+        t = t - math.floor(t)     # Wrap the t value between 0 and 1
         edge = self._edges[n]     # Find which edge we are on
         pos = self._vertices[n]   # Find the position of the starting vertex
         dx = t * edge[0]     # Calculate Offset for dx and dy

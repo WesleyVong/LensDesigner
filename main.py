@@ -136,11 +136,11 @@ if __name__ == '__main__':
     lib = json.load(f)
 
     lens3 = lensassembly.LensAssembly([0,0],lib, sensorOffset=FLANGE_DISTANCE, sensorHeight=SENSOR_HEIGHT)
-    lens3.AddLens("LB1811")
+    lens3.AddLens("AL2550")  # 30mm Focal Length PlanoConvex
     # lens3.AddLens("LA1805")# 30mm Focal Length PlanoConvex
     # lens3.AddLens("LD2297",5.4)# -25mm Focal Length BiConcave
     # lens3.AddLens("LA1805",5,"right")# 30mm Focal Length PlanoConvex
-    # print(lens3)
+    print(lens3)
 
     DIR = 15 * np.pi/180
 
@@ -163,46 +163,50 @@ if __name__ == '__main__':
     # rays = RayTrace(lights, lens3)
     # DrawImage(rays,lens3,saveName="CookeTriplet")
     #
-    OPTIMIZE_SCALE_FACTOR = 1000000
-
-    cons = ({'type': 'ineq', 'fun': lambda x:  x[0]},
-           {'type': 'ineq', 'fun': lambda x:  x[1]},
-           {'type': 'ineq', 'fun': lambda x:  x[2]})
-
-    x0 = np.array([3,3])
-    bounds = [(2/OPTIMIZE_SCALE_FACTOR,1),(2/OPTIMIZE_SCALE_FACTOR,1)]
-
-    # scipy.optimize.minimize(OptimizeFunc, x0  / OPTIMIZE_SCALE_FACTOR, (lens3),
-    #                         constraints=cons, method='Nelder-Mead',bounds=bounds, options={"maxiter":1000})
-
-    lights = []
-    lights.append(emitter.Emitter([-1000, 0],RAYS,0,PLANE_WIDTH, microns=WAVELENGTH_R,type="plane"))
-    lights.append(emitter.Emitter([-1000, 0], RAYS, 0, PLANE_WIDTH, microns=WAVELENGTH_V, type="plane"))
+    # OPTIMIZE_SCALE_FACTOR = 1000000
+    #
+    # cons = ({'type': 'ineq', 'fun': lambda x:  x[0]},
+    #        {'type': 'ineq', 'fun': lambda x:  x[1]},
+    #        {'type': 'ineq', 'fun': lambda x:  x[2]})
+    #
+    # x0 = np.array([3,3])
+    # bounds = [(2/OPTIMIZE_SCALE_FACTOR,1),(2/OPTIMIZE_SCALE_FACTOR,1)]
+    #
+    # # scipy.optimize.minimize(OptimizeFunc, x0  / OPTIMIZE_SCALE_FACTOR, (lens3),
+    # #                         constraints=cons, method='Nelder-Mead',bounds=bounds, options={"maxiter":1000})
+    #
+    # lights = []
+    # lights.append(emitter.Emitter([-1000, 0],RAYS,0,PLANE_WIDTH, microns=WAVELENGTH_R,type="plane"))
+    # lights.append(emitter.Emitter([-1000, 0], RAYS, 0, PLANE_WIDTH, microns=WAVELENGTH_V, type="plane"))
     # lights.append(emitter.Emitter([-1000, -emity],RAYS,DIR,size=PLANE_WIDTH, microns=WAVELENGTH_R,type="plane"))
     # lights.append(emitter.Emitter([-1000, -emity], RAYS, DIR, size=PLANE_WIDTH, microns=WAVELENGTH_V, type="plane"))
     # lights.append(emitter.Emitter([-1000, emity], RAYS, -DIR, size=PLANE_WIDTH, microns=WAVELENGTH_R, type="plane"))
     # lights.append(emitter.Emitter([-1000, emity], RAYS, -DIR, size=PLANE_WIDTH,microns=WAVELENGTH_V, type="plane"))
-
-    rays, finalrays = RayTrace(lights, lens3)
-
-    sensorHit = CalculateHits(finalrays, lens3)
-
-    sensorHeight = len(sensorHit)/2
-
-    print("Raytrace time: {}".format(timeit.default_timer() - startTime))
-    plt.plot(np.linspace(-sensorHeight,sensorHeight,len(sensorHit)),sensorHit/(RAYS*2))
-    plt.savefig('CookeTriplet-plt.png')
+    #
+    # rays, finalrays = RayTrace(lights, lens3)
+    #
+    # sensorHit = CalculateHits(finalrays, lens3)
+    #
+    # sensorHeight = len(sensorHit)/2
+    #
+    # print("Raytrace time: {}".format(timeit.default_timer() - startTime))
+    # plt.plot(np.linspace(-sensorHeight,sensorHeight,len(sensorHit)),sensorHit/(RAYS*2))
+    # plt.savefig('CookeTriplet-plt.png')
     # plt.show()
 
     lights = []
-    lights.append(emitter.Emitter([-1000, 0],20,0,PLANE_WIDTH, microns=WAVELENGTH_R,type="plane"))
-    lights.append(emitter.Emitter([-1000, 0], 20, 0, PLANE_WIDTH, microns=WAVELENGTH_V, type="plane"))
+    lights.append(emitter.Emitter([-1000, 0],2000,0,PLANE_WIDTH, microns=WAVELENGTH_R,type="plane"))
+    lights.append(emitter.Emitter([-1000, 0], 2000, 0, PLANE_WIDTH, microns=WAVELENGTH_V, type="plane"))
     # lights.append(emitter.Emitter([-1000, -emity],20,DIR,size=PLANE_WIDTH, microns=WAVELENGTH_R,type="plane"))
     # lights.append(emitter.Emitter([-1000, -emity], 20, DIR, size=PLANE_WIDTH, microns=WAVELENGTH_V, type="plane"))
     # lights.append(emitter.Emitter([-1000, emity], 20, -DIR, size=PLANE_WIDTH, microns=WAVELENGTH_R, type="plane"))
     # lights.append(emitter.Emitter([-1000, emity], 20, -DIR, size=PLANE_WIDTH,microns=WAVELENGTH_V, type="plane"))
 
+    start_time = timeit.default_timer()
+
     rays, finalrays = RayTrace(lights, lens3)
+
+    print(timeit.default_timer() - start_time)
 
     DrawImage(rays, lens3, saveName="CookeTriplet")
 

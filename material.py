@@ -1,4 +1,4 @@
-import numpy as np
+import math
 import warnings
 import json
 
@@ -66,4 +66,4 @@ class Material:
             nsqm1 = ((self._b[0] * lsq) / (lsq - self._c[0]) +
                      (self._b[1] * lsq) / (lsq - self._c[1]) +
                      (self._b[2] * lsq) / (lsq - self._c[2]))
-            return np.sqrt(nsqm1 + 1)
+            return math.sqrt(nsqm1 + 1)

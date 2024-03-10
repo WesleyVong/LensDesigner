@@ -13,7 +13,7 @@ import timeit
 PAGE_WIDTH = 2000
 PAGE_HEIGHT = 1000
 EPSILON = 0.00001
-
+FAST = False
 
 material_library = MaterialLibrary('materials.json')
 
@@ -23,9 +23,9 @@ with open('Thorlabs.json') as json_file:
 
 im = renderer.Renderer(PAGE_WIDTH, PAGE_HEIGHT, scale=10)
 initial_rays = []
-for i in np.linspace(-9,9,2000):
+for i in np.linspace(-9,9,20):
     initial_rays.append(ray.Ray([-20,i], 0,100, wavelengths=[.4, .7]))
-l = Lens([0,0], material_library)
+l = Lens([0,0], material_library, fast=False)
 # l.load_values(20,10,20, r1=-20, material='BK7')
 l.load_from_dict(lens_library.get("AL2550"))
 
@@ -53,34 +53,45 @@ im.DrawGrid([10,10])
 for e in range(l.num_equations):
     im.DrawEquation(l.equation, 0, 1, 0.01, args=[e])
 
-start_time = timeit.default_timer()
+def compute():
+    all_rays = []
+    for ray in initial_rays:
+        all_rays.append(ray)
 
-all_rays = []
-for ray in initial_rays:
-    all_rays.append(ray)
+    first_hit = []
+    for ray in initial_rays:
+        rays = raytracer.raytrace(ray, l, atmo=material_library.get('Air'), fast=FAST)
+        for r in rays:
+            first_hit.append(r)
+            all_rays.append(r)
 
-first_hit = []
-for ray in initial_rays:
-    rays = raytracer.raytrace(ray, l, atmo=material_library.get('Air'))
-    for r in rays:
-        first_hit.append(r)
-        all_rays.append(r)
+    second_hit = []
+    for ray in first_hit:
+        rays = raytracer.raytrace(ray, l, atmo=material_library.get('Air'), fast=FAST)
+        for r in rays:
+            second_hit.append(r)
+            all_rays.append(r)
+    return all_rays
 
-second_hit = []
-for ray in first_hit:
-    rays = raytracer.raytrace(ray, l, atmo=material_library.get('Air'))
-    for r in rays:
-        second_hit.append(r)
-        all_rays.append(r)
+def benchmark(iter=100):
+    elapsed = []
+    for i in range(iter):
+        start_time = timeit.default_timer()
+        compute()
+        elapsed.append(timeit.default_timer() - start_time)
+    return sum(elapsed) / len(elapsed)
 
-# for ray in all_rays:
-#     im.draw_ray(ray)
+avg_time = benchmark(100)
+print("average time: {}".format(avg_time))
 
-print(timeit.default_timer() - start_time)
-
-# root = scipy.optimize.root(distance, x0=[0, 0], args=(first_hit[1].equation, l.equation, 0, 2),
-#                                    options={'maxfev': 50,
-#                                             'xtol': EPSILON})
-# print(root)
+all_rays = compute()
+for ray in all_rays:
+    im.draw_ray(ray)
 #
-# im.ShowImage()
+#
+# # root = scipy.optimize.root(distance, x0=[0, 0], args=(first_hit[1].equation, l.equation, 0, 2),
+# #                                    options={'maxfev': 50,
+# #                                             'xtol': EPSILON})
+# # print(root)
+# #
+im.ShowImage()

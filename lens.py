@@ -1,4 +1,5 @@
 import numpy as np
+import math
 from surface import Surface
 from material import Material, MaterialLibrary
 import json
@@ -8,7 +9,8 @@ EPSILON = 1e-5
 
 
 def aspheric_lens_equation(t, r, k=0, a=[]):
-    conic = t ** 2 / (r * (1 + np.sqrt(1 - (1 + k) * (t ** 2) / (r ** 2))))
+    tsq = t**2
+    conic = tsq / (r * (1 + math.sqrt(1 - (1 + k) * tsq / (r ** 2))))
     poly = 0
     for idx in range(len(a)):
         poly = poly + a[idx] * t ** ((idx + 2) * 2)
@@ -16,7 +18,8 @@ def aspheric_lens_equation(t, r, k=0, a=[]):
 
 
 class Lens(Surface):
-    def __init__(self, pos, library: MaterialLibrary, dir='left'):
+    def __init__(self, pos, library: MaterialLibrary, dir='left', fast=False):
+        # Fast determines whether to include the top and bottom edges when calculating equations
         self._library = library
         self._pos = pos
         self._dir = dir
@@ -35,6 +38,7 @@ class Lens(Surface):
         self._bound0 = 0
         self._bound1 = 0
         self._edge_thickness = 0
+        self._fast = fast
 
     def load_values(self, diameter, thickness, r0, material, k0=0, a0=[], r1=np.inf, k1=0, a1=[], type=None):
         self._diameter = diameter
@@ -114,12 +118,12 @@ class Lens(Surface):
 
     def calculate_bounds(self):
         if self._k0 > -1:
-            if self._radius >= np.sqrt(self._r0 ** 2 / (1 + self._k0)) - EPSILON:
+            if self._radius >= math.sqrt(self._r0 ** 2 / (1 + self._k0)) - EPSILON:
                 raise Exception("Lens radius is beyond lens equation")
         bound_x0 = aspheric_lens_equation(self._radius, self._r0, self._k0, self._a0)
 
         if self._k0 > -1:
-            if self._radius >= np.sqrt(self._r1 ** 2 / (1 + self._k1)) - EPSILON:
+            if self._radius >= math.sqrt(self._r1 ** 2 / (1 + self._k1)) - EPSILON:
                 raise Exception("Lens radius is beyond lens equation")
         bound_x1 = aspheric_lens_equation(self._radius, self._r1, self._k1, self._a1)
 
@@ -129,24 +133,22 @@ class Lens(Surface):
         edge0 = bound_x0
         edge1 = self._thickness + bound_x1
 
-        self._edge_thickness = np.abs(edge1 - edge0)
+        self._edge_thickness = abs(edge1 - edge0)
 
     def equation(self, t, n=0):
-        t = t - np.floor(t)
+        t = t - math.floor(t)
         if n == 0:    # Surface 1
-            t_scaled = (t - 0.5) * 2
-            t_scaled = t_scaled * self._radius
+            t_scaled = (t - 0.5) * self._diameter
             x = aspheric_lens_equation(t_scaled, self._r0, self._k0, self._a0)
             return [self._pos[0] + x, self._pos[1] + t_scaled]
-        elif n == 1:  # Top Connecting Line
+        elif n == 1:  # Surface 2
+            t_scaled = (t - 0.5) * self._diameter
+            x = aspheric_lens_equation(t_scaled, self._r1, self._k1, self._a1)
+            return [self._pos[0] + self._thickness + x, self._pos[1] - t_scaled]
+        elif n == 2:  # Top Connecting Line
             t_scaled = t * self._edge_thickness
             x = self._pos[0] + self._bound0 + t_scaled
             return [x, self._pos[1] + self._radius]
-        elif n == 2:  # Surface 2
-            t_scaled = (t - 0.5) * 2
-            t_scaled = t_scaled * self._radius
-            x = aspheric_lens_equation(t_scaled, self._r1, self._k1, self._a1)
-            return [self._pos[0] + self._thickness + x, self._pos[1] - t_scaled]
         else:   # Bottom Connecting Line
             t_scaled = t * self._edge_thickness
             x = self._pos[0] + self._thickness + self._bound1 - t_scaled
@@ -166,4 +168,6 @@ class Lens(Surface):
 
     @property
     def num_equations(self):
+        if self._fast:
+            return 2
         return 4

@@ -1,4 +1,4 @@
-import numpy as np
+import math
 from surface import Surface
 from material import Material
 
@@ -8,8 +8,8 @@ class Ray(Surface):
         self._pos = pos
         self._ang = ang
         self._mag = mag
-        self._dx = np.cos(ang) * mag
-        self._dy = np.sin(ang) * mag
+        self._dx = math.cos(ang) * mag
+        self._dy = math.sin(ang) * mag
         self._wavelengths = wavelengths
         self._hits = hits
         self._end_t = 1
