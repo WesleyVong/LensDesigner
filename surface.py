@@ -5,8 +5,8 @@ from material import Material
 
 class Surface(ABC):
     @abstractmethod
-    # Returns [x,y] values for an equation given [0<=t<=1]
-    # If t < 0 or t > 1, it loops around
+    # Returns [x,y] values for an equation given
+    # t_norm determines whether t is normalized to 0<=t<=1
     def equation(self, t, n=0):
         pass
 
@@ -25,10 +25,10 @@ class Surface(ABC):
         return None
 
     def normalize(self, x, y):
-        mag = math.sqrt(x**2 + y**2)
+        mag = math.sqrt(x ** 2 + y ** 2)
         if mag == 0:
-            return [0,0]
-        return [x/mag, y/mag]
+            return [0, 0]
+        return [x / mag, y / mag]
 
 
 class Polygon(Surface):
@@ -47,18 +47,18 @@ class Polygon(Surface):
         tmp_verts.append(self._vertices[0])
         for i in range(self._edgeNum):
             vert0 = tmp_verts[i]
-            vert1 = tmp_verts[i+1]
+            vert1 = tmp_verts[i + 1]
             dx = vert1[0] - vert0[0]
             dy = vert1[1] - vert0[1]
             self._edges.append([dx, dy])
 
     def equation(self, t, n=0):
-        t = t - math.floor(t)     # Wrap the t value between 0 and 1
-        edge = self._edges[n]     # Find which edge we are on
-        pos = self._vertices[n]   # Find the position of the starting vertex
-        dx = t * edge[0]     # Calculate Offset for dx and dy
+        t = t - math.floor(t)  # Wrap the t value between 0 and 1
+        edge = self._edges[n]  # Find which edge we are on
+        pos = self._vertices[n]  # Find the position of the starting vertex
+        dx = t * edge[0]  # Calculate Offset for dx and dy
         dy = t * edge[1]
-        return [pos[0]+dx, pos[1]+dy]
+        return [pos[0] + dx, pos[1] + dy]
 
     def tangent(self, t, n=0):
         edge = self._edges[n]

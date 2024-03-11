@@ -4,7 +4,7 @@ import surface
 from ray import Ray
 from material import Material
 
-EPSILON = 0.00001
+EPSILON = 0.0001
 
 
 def distance(T, f0, f1, n0=0, n1=0):
@@ -12,32 +12,35 @@ def distance(T, f0, f1, n0=0, n1=0):
     pos0 = f0(T[0], n0)
     pos1 = f1(T[1], n1)
     # Distanced multiplied to allow for more precise root optimization
-    return [(pos0[0] - pos1[0])*10, (pos0[1] - pos1[1])*10]
+    return [(pos0[0] - pos1[0]), (pos0[1] - pos1[1])]
 
 
 def calculate_refraction(theta, n0, n1):
     # Using Snell's Law
     sin_ref = (n0/n1) * math.sin(theta)
-    if sin_ref > 1 or sin_ref < -1:
-        return math.nan
-    return math.asin(sin_ref)
+    if -1 < sin_ref < 1:
+        return math.asin(sin_ref)
+    return math.nan
 
 
 def raytrace(ray: Ray, surf: surface.Surface, atmo: Material, fast=False, epsilon=0.001):
     # Finds intersection between ray and surface
     # Atmo represents the surrounding material i.e. air
-    intersect_t = []
     min_t = [math.inf, math.inf]
     min_e = -1
     for e in range(surf.num_equations):
-        root = scipy.optimize.root(distance, x0=[0, 0], args=(ray.equation, surf.equation, 0, e), method='hybr',
-                                   options={'maxfev': 20,
-                                            'xtol': EPSILON})
+        root = scipy.optimize.root(distance, x0=[0, 0],
+                                   args=(ray.equation, surf.equation, 0, e),
+                                   method='hybr',
+                                   tol=0.001,
+                                   options={'maxfev': 40})
         if root.get('success'):
             t = root.get('x')
             if 0 <= t[0] < min_t[0]:
                 min_t = t
                 min_e = e
+        else:
+            print(root)
 
     if min_e == -1:
         return []
@@ -46,20 +49,14 @@ def raytrace(ray: Ray, surf: surface.Surface, atmo: Material, fast=False, epsilo
     ray.end_t = min_t[0]
 
     r_tangent = ray.tangent(min_t[0])
+    r_tangent_angle = math.atan(r_tangent[1]/r_tangent[0])
     s_tangent = surf.tangent(min_t[1], min_e)
     s_ortho = [-s_tangent[1], s_tangent[0]]
     s_ortho_angle = math.atan(s_ortho[1]/s_ortho[0])
 
-    dot = r_tangent[0] * s_ortho[0] + r_tangent[1] * s_ortho[1]  # Faster than np.dot
-    if s_ortho[1] < 0:  # Potential bugs here is depending on which of s_ortho is negative
-        dot = -dot
-    theta = math.acos(dot)
-    if theta > math.pi/2:
-        theta = theta - math.pi
-    if theta < -math.pi/2:
-        theta = theta + math.pi
+    theta = s_ortho_angle - r_tangent_angle
 
-    # print("r_tangent {} s_ortho {} theta {}".format(r_tangent, s_ortho, theta))
+    print("r_tangent_angle: {} s_ortho_angle: {} theta: {}".format(r_tangent_angle, s_ortho_angle, theta))
 
     new_rays = []
     object_material = surf.material
@@ -77,7 +74,7 @@ def raytrace(ray: Ray, surf: surface.Surface, atmo: Material, fast=False, epsilo
         if fast:
             angles.append(angle)
             continue
-        elif math.isnan(angle):
+        if math.isnan(angle):
             continue
         new_ray = Ray(hit_pos, angle, mag=100, wavelengths=[wavelength], hits=ray.hits + 1)
         new_rays.append(new_ray)

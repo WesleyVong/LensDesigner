@@ -18,11 +18,11 @@ def aspheric_lens_equation(t, r, k=0, a=[]):
 
 
 class Lens(Surface):
-    def __init__(self, pos, library: MaterialLibrary, dir='left', fast=False):
+    def __init__(self, pos, library: MaterialLibrary, lens_dict=None, direction='left', fast=False):
         # Fast determines whether to include the top and bottom edges when calculating equations
         self._library = library
         self._pos = pos
-        self._dir = dir
+        self._direction = direction
         self._material = Material()
         self._material_name = ""
         self._diameter = 0
@@ -39,6 +39,9 @@ class Lens(Surface):
         self._bound1 = 0
         self._edge_thickness = 0
         self._fast = fast
+
+        if lens_dict is not None:
+            self.load_from_dict(lens_dict)
 
     def load_values(self, diameter, thickness, r0, material, k0=0, a0=[], r1=np.inf, k1=0, a1=[], type=None):
         self._diameter = diameter
@@ -103,9 +106,9 @@ class Lens(Surface):
             if lens_type == "biconcave":
                 pass
 
-        if self._dir == "left":
+        if self._direction == "left":
             pass
-        if self._dir == "right":
+        if self._direction == "right":
             tmpr = self._r0
             tmpa = self._a0
             self._r0 = -self._r1
@@ -163,6 +166,9 @@ class Lens(Surface):
         dy = pos1[1] - pos0[1]
         return self.normalize(dx, dy)
 
+    @property
+    def pos(self):
+        return self._pos
 
     @property
     def material(self):
@@ -173,3 +179,15 @@ class Lens(Surface):
         if self._fast:
             return 2
         return 4
+
+    @property
+    def diameter(self):
+        return self._diameter
+
+    @property
+    def radius(self):
+        return self._radius
+
+    @property
+    def thickness(self):
+        return self._thickness

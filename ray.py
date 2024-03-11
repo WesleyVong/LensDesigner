@@ -7,12 +7,12 @@ class Ray(Surface):
     def __init__(self, pos, ang, mag=1, wavelengths=[], hits=0):
         self._pos = pos
         self._ang = ang
-        self._mag = mag
-        self._dx = math.cos(ang) * mag
-        self._dy = math.sin(ang) * mag
+        self._dx = math.cos(ang)
+        self._dy = math.sin(ang)
         self._wavelengths = wavelengths
         self._hits = hits
-        self._end_t = 1
+        self._start_t = 0
+        self._end_t = mag
 
         self._tangent = [math.cos(ang), math.sin(ang)]
 
