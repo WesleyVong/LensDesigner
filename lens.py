@@ -5,7 +5,7 @@ from material import Material, MaterialLibrary
 import json
 
 # EPSILON = np.finfo(np.float32).eps
-EPSILON = 1e-5
+EPSILON = 1e-6
 
 
 def aspheric_lens_equation(t, r, k=0, a=[]):
@@ -39,11 +39,12 @@ class Lens(Surface):
         self._bound1 = 0
         self._edge_thickness = 0
         self._fast = fast
+        self._focal_length = 0
 
         if lens_dict is not None:
             self.load_from_dict(lens_dict)
 
-    def load_values(self, diameter, thickness, r0, material, k0=0, a0=[], r1=np.inf, k1=0, a1=[], type=None):
+    def load_values(self, diameter, thickness, r0, material, k0=0, a0=[], r1=np.inf, k1=0, a1=[], focal_length=0, type=None):
         self._diameter = diameter
         self._radius = self._diameter / 2
         self._thickness = thickness
@@ -59,6 +60,7 @@ class Lens(Surface):
         self._a1 = a1
         self._type = type
         self._material_name = material
+        self._focal_length = focal_length
 
         self.setup()
 
@@ -78,6 +80,7 @@ class Lens(Surface):
         self._a1 = np.asarray(d.get('a1', []))
         self._type = d.get('type', None)
         self._material_name = d.get('material', '')
+        self._focal_length = d.get('focalLength', 0)
 
         self.setup()
 
@@ -93,7 +96,7 @@ class Lens(Surface):
                 self._a0 = -self._a0
 
             # Back Surface
-            if np.isinf(self._r1):
+            if math.isinf(self._r1):
                 self._r1 = -self._r0
                 self._k1 = self._k0
                 self._a1 = -np.array(self._a0)
@@ -101,8 +104,7 @@ class Lens(Surface):
             if lens_type == "planoconvex" or lens_type == "planoconcave":
                 self._r1 = np.inf
             if lens_type == "biconvex":
-                self._r1 = -self._r1
-                self._a1 = -self._a1
+                pass
             if lens_type == "biconcave":
                 pass
 
@@ -141,10 +143,14 @@ class Lens(Surface):
     def equation(self, t, n=0):
         t = t - math.floor(t)
         if n == 0:    # Surface 1
+            # if t == 0:
+            #     t += EPSILON
             t_scaled = (t - 0.5) * self._diameter
             x = aspheric_lens_equation(t_scaled, self._r0, self._k0, self._a0)
             return [self._pos[0] + x, self._pos[1] + t_scaled]
         elif n == 1:  # Surface 2
+            # if t == 0:
+            #     t += EPSILON
             t_scaled = (t - 0.5) * self._diameter
             x = aspheric_lens_equation(t_scaled, self._r1, self._k1, self._a1)
             return [self._pos[0] + self._thickness + x, self._pos[1] - t_scaled]
@@ -159,12 +165,30 @@ class Lens(Surface):
 
     def tangent(self, t, n=0):
         if n >= 2:
-            return [1,0]
+            return [1, 0]
         pos0 = self.equation(t+EPSILON, n)
         pos1 = self.equation(t-EPSILON, n)
         dx = pos1[0] - pos0[0]
         dy = pos1[1] - pos0[1]
         return self.normalize(dx, dy)
+
+    def normal(self, t, n=0):
+        if n == 0:
+            tangent = self.tangent(t, n)
+            if tangent[1] < 0:
+                return [tangent[1], -tangent[0]]
+            else:
+                return [-tangent[1], tangent[0]]
+        if n == 1:
+            tangent = self.tangent(t, n)
+            if tangent[1] < 0:
+                return [-tangent[1], tangent[0]]
+            else:
+                return [tangent[1], -tangent[0]]
+        if n == 2:
+            return [0, 1]
+        if n == 3:
+            return [0, -1]
 
     @property
     def pos(self):
@@ -191,3 +215,7 @@ class Lens(Surface):
     @property
     def thickness(self):
         return self._thickness
+
+    @property
+    def focal_length(self):
+        return self._focal_length

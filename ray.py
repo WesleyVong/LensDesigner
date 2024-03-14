@@ -4,13 +4,12 @@ from material import Material
 
 
 class Ray(Surface):
-    def __init__(self, pos, ang, mag=1, wavelengths=[], hits=0):
+    def __init__(self, pos, ang, mag=1, wavelengths=[]):
         self._pos = pos
         self._ang = ang
         self._dx = math.cos(ang)
         self._dy = math.sin(ang)
         self._wavelengths = wavelengths
-        self._hits = hits
         self._start_t = 0
         self._end_t = mag
 
@@ -25,6 +24,12 @@ class Ray(Surface):
     def tangent(self, t, n=0):
         return self._tangent
 
+    def normal(self, t, n=0):
+        if self._tangent[0] < 0:
+            return [self._tangent[1], -self._tangent[0]]
+        else:
+            return [-self._tangent[1], self._tangent[0]]
+
     @property
     def num_equations(self):
         return 1
@@ -34,12 +39,8 @@ class Ray(Surface):
         return self._wavelengths
 
     @property
-    def hits(self):
-        return self._hits
-
-    @hits.setter
-    def hits(self, hits):
-        self._hits = hits
+    def angle(self):
+        return self._ang
 
     @property
     def end_t(self):

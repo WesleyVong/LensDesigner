@@ -30,16 +30,19 @@ class Material:
         # Maximum and Minimum defined wavelength (um)
         self._minMicrons = 0
         self._maxMicrons = 0
+        # Whether the material is transmissive of not
+        self._transmissive = 1
         # Cache of previously calculated IOR values for quicker lookup
         self._cache = {}
 
-    def load_values(self, name: str, formula: str, b, c, min_microns: float, max_microns: float):
+    def load_values(self, name: str, formula: str, b, c, min_microns: float, max_microns: float, transmissive: int):
         self._name = name
         self._formula = formula
         self._b = b
         self._c = c
         self._minMicrons = min_microns
         self._maxMicrons = max_microns
+        self._transmissive = transmissive
 
     def load_from_dict(self, d: dict):
         self._name = d.get('name', None)
@@ -48,8 +51,11 @@ class Material:
         self._c = d.get('cVals', [])
         self._minMicrons = d.get('minMicrons', 0)
         self._maxMicrons = d.get('maxMicrons', 0)
+        self._transmissive = d.get('transmissive', 0)
 
     def get_ior(self, microns):
+        if self._transmissive == 0:
+            return 0
         cached = self._cache.get(microns)
         if cached is not None:
             return cached

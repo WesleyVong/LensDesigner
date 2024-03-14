@@ -9,8 +9,8 @@ class Renderer:
         self.height = height
         self.scale = scale
         self.bg = bg
-        self.image = Image.new(mode="RGB", size=(self.width, self.height), color = bg)
-        self.drawing = ImageDraw.Draw(self.image)
+        self._image = Image.new(mode="RGB", size=(self.width, self.height), color = bg)
+        self.drawing = ImageDraw.Draw(self._image)
 
     # Converts x and y values to local grid
     # Local grid centers image around 0,0
@@ -41,7 +41,7 @@ class Renderer:
                 prev_dist = dist
                 continue
             self.drawing.point(local_coords, fill=color)
-            # self.image.putpixel(localCoords, color)
+            # self._image.putpixel(localCoords, color)
 
     def draw_ray(self, ray: Ray):
         start_pos = self.convert_xy(ray.equation(0))
@@ -76,13 +76,17 @@ class Renderer:
                         continue
                     if local_coords[1] >= self.height or local_coords[1] < 0:
                         continue
-                    self.image.putpixel(local_coords, color)
+                    self._image.putpixel(local_coords, color)
 
     def show_image(self):
-        self.image.show()
+        self._image.show()
 
     def save_image(self, name="img"):
-        self.image.save("{}.png".format(name))
+        self._image.save("{}.png".format(name))
+
+    @property
+    def image(self):
+        return self._image
 
 
 def wavelength_to_rgb(microns):
