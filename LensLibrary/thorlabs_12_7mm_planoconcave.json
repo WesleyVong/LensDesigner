@@ -1,0 +1,51 @@
+{
+  "LC2265": {
+    "name": "LC2265",
+    "diameter": 12.7,
+    "r0": 11.7,
+    "k0": 0,
+    "a0": [],
+    "thickness": 3,
+    "material": "SF11",
+    "type": "planoconcave",
+    "focalLength": -15,
+    "description": "N-SF11 Plano-Concave Lens, f = -15.0 mm, Ø1/2\", Uncoated"
+  },
+    "LC1054": {
+    "name": "LC1054",
+    "diameter": 12.7,
+    "r0": 12.9,
+    "k0": 0,
+    "a0": [],
+    "thickness": 3,
+    "material": "BK7",
+    "type": "planoconcave",
+    "focalLength": -24.9,
+    "description": "N-BK7 Plano-Concave Lens, Ø1/2\", f = -25 mm, Uncoated"
+  },
+  "LC1060": {
+    "name": "LC1060",
+    "diameter": 12.7,
+    "r0": 15.4,
+    "k0": 0,
+    "a0": [],
+    "thickness": 4.7,
+    "material": "BK7",
+    "type": "planoconcave",
+    "focalLength": -29.9,
+    "description": "N-BK7 Plano-Concave Lens, Ø1/2\", f = -30 mm, Uncoated"
+  },
+  "LC1439": {
+    "name": "LC1439",
+    "diameter": 12.7,
+    "r0": 25.7,
+    "k0": 0,
+    "a0": [],
+    "thickness": 4.3,
+    "material": "BK7",
+    "type": "planoconcave",
+    "focalLength": -49.8,
+    "description": "N-BK7 Plano-Concave Lens, Ø1/2\", f = -50 mm, Uncoated"
+  }
+
+}

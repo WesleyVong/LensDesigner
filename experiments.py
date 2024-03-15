@@ -13,9 +13,10 @@ from material import MaterialLibrary, Material
 import scipy
 import timeit
 import itertools
+import os
 
-PAGE_WIDTH = 1000
-PAGE_HEIGHT = 500
+PAGE_WIDTH = 1600
+PAGE_HEIGHT = 800
 FAST = True
 
 
@@ -33,14 +34,58 @@ if __name__ == "__main__":
 
     material_library = MaterialLibrary('materials.json')
 
-    with open('thorlabs.json') as json_file:
-        lens_library = json.load(json_file)
+    lens_library = {}
+
+    lens_directory = 'LensLibrary'
+    lens_json = os.listdir(lens_directory)
+    for f in lens_json:
+        with open('{}/{}'.format(lens_directory, f)) as json_file:
+            lens_library.update(json.load(json_file))
+
 
     im = renderer.Renderer(PAGE_WIDTH, PAGE_HEIGHT, scale=10)
 
     lenses = []
 
-    # l = Lens([0, 0], material_library, lens_dict=lens_library.get("LA1289"), fast=True)
+    # 26mm f/2 4 element lens
+    l = Lens([0, 0], material_library, lens_dict=lens_library.get("LA1027"), fast=True)
+    lenses.append(l)
+    l = Lens([0.1 + l.pos[0] + l.thickness, 0], material_library, lens_dict=lens_library.get("LC2679"), direction='right', fast=True)
+    lenses.append(l)
+    l = Aperture([4 + l.pos[0] + l.thickness, 0], 50.4, 24 / math.pow(2, 0.5*3))
+    lenses.append(l)
+    l = Lens([0.1 + l.pos[0] + l.thickness, 0], material_library, lens_dict=lens_library.get("LA1509"), direction='right', fast=True)
+    lenses.append(l)
+    l = Lens([0.1 + l.pos[0] + l.thickness, 0], material_library, lens_dict=lens_library.get("LA1805"), direction='right', fast=True)
+    lenses.append(l)
+
+
+    # l = Lens([0.1 + l.pos[0] + l.thickness, 0], material_library, lens_dict=lens_library.get("AL2550"), fast=True)
+    # lenses.append(l)
+    # l = Lens([0.1 + l.pos[0] + l.thickness, 0], material_library, lens_dict=lens_library.get("LC2679"), direction='right', fast=True)
+    # lenses.append(l)
+    # l = Aperture([4 + l.pos[0] + l.thickness, 0], 50.4, 22 / math.pow(2, 0.5*2))
+    # lenses.append(l)
+    # l = Lens([0.1 + l.pos[0] + l.thickness, 0], material_library, lens_dict=lens_library.get("LA1509"), direction='right', fast=True)
+    # lenses.append(l)
+    # l = Lens([0.1 + l.pos[0] + l.thickness, 0], material_library, lens_dict=lens_library.get("LA1805"), direction='right', fast=True)
+    # lenses.append(l)
+
+
+    # 30mm f/4 lens using Cooke Triplet design
+    # l = Lens([0, 0], material_library, lens_dict=lens_library.get("LA1074"), fast=True)
+    # lenses.append(l)
+    # l = Aperture([0.1 + l.pos[0] + l.thickness, 0], 25.4, 10)
+    # lenses.append(l)
+    # l = Lens([1 + l.pos[0] + l.thickness, 0], material_library, lens_dict=lens_library.get("LD2060"), fast=True)
+    # lenses.append(l)
+    # l = Aperture([1 + l.pos[0] + l.thickness, 0], 25.4, 4.6)
+    # lenses.append(l)
+    # l = Lens([0 + l.pos[0] + l.thickness, 0], material_library, lens_dict=lens_library.get("LA1074"), direction='right', fast=True)
+    # lenses.append(l)
+
+    # 31mm f/2 lens using 4 elements
+    # l = Lens([0, 0], material_library, lens_dict=lens_library.get("LA1805"), fast=True)
     # lenses.append(l)
     # l = Aperture([0.1 + l.pos[0] + l.thickness, 0], 25.4, 12.7)
     # lenses.append(l)
@@ -48,35 +93,13 @@ if __name__ == "__main__":
     # lenses.append(l)
     # l = Lens([.5 + l.pos[0] + l.thickness, 0], material_library, lens_dict=lens_library.get("LD2060"), fast=True)
     # lenses.append(l)
-    # l = Aperture([1 + l.pos[0] + l.thickness, 0], 25.4, 10)
+    # l = Aperture([1 + l.pos[0] + l.thickness, 0], 25.4, 8.5)
     # lenses.append(l)
-    # l = Lens([.1 + l.pos[0] + l.thickness, 0], material_library, lens_dict=lens_library.get("LA1560"), direction='right', fast=True)
-    # lenses.append(l)
-
-
-    # l = Lens([0, 0], material_library, lens_dict=lens_library.get("LA1074"), fast=True)
-    # lenses.append(l)
-    # l = Aperture([0.1 + l.pos[0] + l.thickness, 0], 25.4, 10)
-    # lenses.append(l)
-    # l = Lens([1 + l.pos[0] + l.thickness, 0], material_library, lens_dict=lens_library.get("LD2060"), fast=True)
-    # lenses.append(l)
-    # l = Aperture([1 + l.pos[0] + l.thickness, 0], 25.4, 5)
-    # lenses.append(l)
-    # l = Lens([0 + l.pos[0] + l.thickness, 0], material_library, lens_dict=lens_library.get("LA1074"), direction='right', fast=True)
+    # l = Lens([0.1 + l.pos[0] + l.thickness, 0], material_library, lens_dict=lens_library.get("LA1560"), direction='right', fast=True)
     # lenses.append(l)
 
-    l = Lens([0, 0], material_library, lens_dict=lens_library.get("LA1805"), fast=True)
-    lenses.append(l)
-    l = Aperture([0.01 + l.pos[0] + l.thickness, 0], 25.4, 12.7)
-    lenses.append(l)
-    l = Lens([.01 + l.pos[0] + l.thickness, 0], material_library, lens_dict=lens_library.get("LB1378"), fast=True)
-    lenses.append(l)
-    l = Lens([.5 + l.pos[0] + l.thickness, 0], material_library, lens_dict=lens_library.get("LD2060"), fast=True)
-    lenses.append(l)
-    l = Aperture([1 + l.pos[0] + l.thickness, 0], 25.4, 8.5)
-    lenses.append(l)
-    l = Lens([0.1 + l.pos[0] + l.thickness, 0], material_library, lens_dict=lens_library.get("LA1560"), direction='right', fast=True)
-    lenses.append(l)
+    # l = Aperture([0, 0], 25.4, 8.5)
+    # lenses.append(l)
 
 
     focal_lengths = []
@@ -95,30 +118,13 @@ if __name__ == "__main__":
     SENSOR_DIAGONAL = math.sqrt(23.6**2 + 15.7**2)
     FOV = 2 * math.atan(SENSOR_DIAGONAL / (2 * efl))
     ANGLE = FOV / 2
-    LIGHT_WIDTH = 20
-    NUM_RAYS = 20
-    initial_rays = []
-    for i in np.linspace(-LIGHT_WIDTH/2, LIGHT_WIDTH/2, NUM_RAYS):
-        initial_rays.append(ray.Ray([-20, i], 0, 100, wavelengths=[.4]))
+    LIGHT_WIDTH = 22
+    NUM_RAYS = 100
 
-
-
-    # Get direction of Ray
-    # xydir = np.array([math.cos(ANGLE), math.sin(ANGLE)])
-    #
-    # # Calculate normal of direction
-    # xystep = np.random.rand(2)
-    # xystep = xystep - xystep.dot(xydir) * xydir
-    # xystep = xystep / np.linalg.norm(xystep)
-    # xstep = xystep[0] * LIGHT_WIDTH / 2
-    # ystep = xystep[1] * LIGHT_WIDTH / 2
-    #
-    # x = math.cos(ANGLE)*-20
-    # y = math.sin(ANGLE)*-20 - 2
-    #
-    # coords = np.linspace([x - xstep, y - ystep], [x + xstep, y + ystep], NUM_RAYS)
-    # for coord in coords:
-    #     initial_rays.append(ray.Ray(coord, ANGLE, 100, wavelengths=[.4, .7]))
+    emitter0 = ray.Emitter([5,0], NUM_RAYS, 'directed', [.4, .7], angle=0, size=LIGHT_WIDTH, magnitude=100)
+    emitter1 = ray.Emitter([5,0], NUM_RAYS, 'directed', [.4, .7], angle=ANGLE, size=LIGHT_WIDTH)
+    # emitter0 = ray.Emitter([5,0], NUM_RAYS, 'point', [.4, .7], angle=0, size=math.pi/90, magnitude=1000)
+    # emitter1 = ray.Emitter([5,0], NUM_RAYS, 'point', [.4, .7], angle=ANGLE, size=math.pi/90, magnitude=1000)
 
     im.draw_grid([10, 10])
 
@@ -127,32 +133,52 @@ if __name__ == "__main__":
             im.draw_equation(curr_lens.equation, 0, 1, 0.01, args=[eq])
 
 
-    def compute(lights, assembly):
-        compute_rays = lights
-        total_rays = lights
+    def compute(emitter, assembly):
+        compute_rays = emitter.rays
+        total_rays = emitter.rays
         for curr_object in assembly:
             for i in range(2):
                 computed_rays = []
                 for curr_ray in compute_rays:
-                    rays = raytracer.raytrace(curr_ray, curr_object, atmo=material_library.get('Air'), fast=FAST)
+                    rays, hit = raytracer.raytrace(curr_ray, curr_object, atmo=material_library.get('Air'), fast=FAST)
                     for computed_ray in rays:
                         computed_rays.append(computed_ray)
                 total_rays = total_rays + computed_rays
                 compute_rays = computed_rays
         return total_rays, compute_rays
 
+    total, computed = compute(emitter0, lenses)
+    center_rays = len(computed)
+    all_rays = total
+    final_rays = computed
 
-    all_rays, final_rays = compute(initial_rays, lenses)
-    # final_angles = [final_rays[i].angle for i in range(len(final_rays))]
-    # theta = (max(final_angles) - min(final_angles))/2
-    # numerical_aperture = 1.0 * math.sin(theta)
-    # f_number = 1 / (2 * numerical_aperture)
-    # print("Theta: {} NA: {} F-Stop: {}".format(theta, numerical_aperture, f_number))
-    for ray in all_rays:
-        im.draw_ray(ray)
+    final_angles = [final_rays[i].angle for i in range(len(final_rays))]
+    theta = (max(final_angles) - min(final_angles))/2
+    numerical_aperture = 1.0 * math.sin(theta)
+    f_number = 1 / (2 * numerical_aperture)
+    print("Theta: {} NA: {} F-Stop: {}".format(theta, numerical_aperture, f_number))
 
-    img = np.asarray(im.image)
-    plt.imshow(img)
-    plt.show()
-    # im.show_image()
-    # im.save_image('cooke-triplet')
+    total, computed = compute(emitter1, lenses)
+    edge_rays = len(computed)
+    all_rays = all_rays + total
+    final_rays = final_rays + computed
+
+    light_ratio = edge_rays/center_rays
+    try:
+        f_stops = math.log(light_ratio, 2)
+    except ValueError:
+        f_stops = math.nan
+    print("Center rays: {} Edge rays: {} Ratio: {} Stops: {}".format(center_rays, edge_rays, light_ratio, f_stops))
+
+    for i in range(len(all_rays)):
+        # if i % 10 == 0:
+        #     im.draw_ray(all_rays[i])
+        #     im.draw_ray(all_rays[i-1])
+        im.draw_ray(all_rays[i])
+
+    # img = np.asarray(im.image)
+    # plt.imshow(img)
+    # plt.show()
+    # im.save_image("31mm-f2-4elem")
+
+    im.show_image()

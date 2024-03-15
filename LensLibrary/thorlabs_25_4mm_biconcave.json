@@ -1,0 +1,50 @@
+{
+    "LD2297": {
+    "name": "LD2297",
+    "diameter": 25.4,
+    "r0": 39.6,
+    "k0": 0,
+    "a0": [],
+    "thickness": 3,
+    "material": "SF11",
+    "type": "biconcave",
+    "focalLength": -25,
+    "description": "N-SF11 Bi-Concave Lens, Ø25.4 mm, f = -25.0 mm, Uncoated"
+  },
+    "LD1464": {
+    "name": "LD1464",
+    "diameter": 25.4,
+    "r0": 52,
+    "k0": 0,
+    "a0": [],
+    "thickness": 3,
+    "material": "BK7",
+    "type": "biconcave",
+    "focalLength": -50,
+      "description": "N-BK7 Bi-Concave Lens, Ø25.4 mm, f = -50.0 mm, Uncoated"
+  },
+    "LD1170": {
+    "name": "LD1170",
+    "diameter": 25.4,
+    "r0": 77.9,
+    "k0": 0,
+    "a0": [],
+    "thickness": 3.5,
+    "material": "BK7",
+    "type": "biconcave",
+    "focalLength": -750,
+      "description": "N-BK7 Bi-Concave Lens, Ø25.4 mm, f = -75.0 mm, Uncoated"
+  },
+    "LD1613": {
+    "name": "LD1613",
+    "diameter": 25.4,
+    "r0": 103.7,
+    "k0": 0,
+    "a0": [],
+    "thickness": 4,
+    "material": "BK7",
+    "type": "biconcave",
+    "focalLength": -1000,
+      "description": "N-BK7 Bi-Concave Lens, Ø25.4 mm, f = -100.0 mm, Uncoated"
+  }
+}

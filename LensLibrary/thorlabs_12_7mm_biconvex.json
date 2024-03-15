@@ -1,0 +1,86 @@
+{
+  "LB1092": {
+    "name": "LB1092",
+    "diameter": 12.7,
+    "r0": 14.6,
+    "k0": 0,
+    "a0": [],
+    "thickness": 4.7,
+    "material": "BK7",
+    "type": "biconvex",
+      "focalLength": 15,
+      "description": "N-BK7 Bi-Convex Lens, Ø1/2\", f = 15.0 mm, Uncoated"
+  },
+  "LB1450": {
+    "name": "LB1450",
+    "diameter": 12.7,
+    "r0": 19.9,
+    "k0": 0,
+    "a0": [],
+    "thickness": 3.9,
+    "material": "BK7",
+    "type": "biconvex",
+      "focalLength": 20,
+      "description": "N-BK7 Bi-Convex Lens, Ø1/2\", f = 20.0 mm, Uncoated"
+  },
+  "LB1014": {
+    "name": "LB1014",
+    "diameter": 12.7,
+    "r0": 25.2,
+    "k0": 0,
+    "a0": [],
+    "thickness": 3.4,
+    "material": "BK7",
+    "type": "biconvex",
+      "focalLength": 25,
+      "description": "N-BK7 Bi-Convex Lens, Ø1/2\", f = 25.0 mm, Uncoated"
+  },
+  "LB1258": {
+    "name": "LB1258",
+    "diameter": 12.7,
+    "r0": 30.4,
+    "k0": 0,
+    "a0": [],
+    "thickness": 3.1,
+    "material": "BK7",
+    "type": "biconvex",
+      "focalLength": 30,
+      "description": "N-BK7 Bi-Convex Lens, Ø1/2\", f = 30.0 mm, Uncoated"
+  },
+  "LB1378": {
+    "name": "LB1378",
+    "diameter": 12.7,
+    "r0": 40.7,
+    "k0": 0,
+    "a0": [],
+    "thickness": 2.8,
+    "material": "BK7",
+    "type": "biconvex",
+      "focalLength": 40,
+      "description": "N-BK7 Bi-Convex Lens, Ø1/2\", f = 40.0 mm, Uncoated"
+  },
+  "LB1844": {
+    "name": "LB1844",
+    "diameter": 12.7,
+    "r0": 51.1,
+    "k0": 0,
+    "a0": [],
+    "thickness": 2.6,
+    "material": "BK7",
+    "type": "biconvex",
+      "focalLength": 50,
+      "description": "N-BK7 Bi-Convex Lens, Ø1/2\", f = 50.0 mm, Uncoated"
+  },
+  "LB1187": {
+    "name": "LB1187",
+    "diameter": 12.7,
+    "r0": 102.6,
+    "k0": 0,
+    "a0": [],
+    "thickness": 2.2,
+    "material": "BK7",
+    "type": "biconvex",
+      "focalLength": 100,
+      "description": "N-BK7 Bi-Convex Lens, Ø1/2\", f = 100.0 mm, Uncoated"
+  }
+}

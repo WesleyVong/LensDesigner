@@ -1,0 +1,26 @@
+{
+  "AL2520": {
+    "name": "AL2520",
+    "diameter": 25,
+    "r0": 15.54,
+    "k0": -1.35,
+    "a0": [2.3618134e-5, -1.1303079e-8, -1.1113906e-11, -2.3981714e-14, 3.035791e-17, 1.3660815e-19, -1.8881587e-22],
+    "thickness": 7.6,
+    "material": "LAH64",
+    "type": "planoconvex",
+      "focalLength": 20,
+      "description":"Ø25 mm N-BK7 Aspheric Lens, f=50 mm, NA=0.23, Uncoated"
+  },
+    "AL2550": {
+    "name": "AL2550",
+    "diameter": 25,
+    "r0": 25.56,
+    "k0": -1.01,
+    "a0": [3.2703958e-6, 7.7205335e-10, 1.6304727e-13],
+    "thickness": 6,
+    "material": "BK7",
+    "type": "planoconvex",
+      "focalLength": 50,
+      "description":"Ø25 mm N-BK7 Aspheric Lens, f=50 mm, NA=0.23, Uncoated"
+  }
+}

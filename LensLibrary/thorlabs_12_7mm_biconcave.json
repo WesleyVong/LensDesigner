@@ -1,0 +1,26 @@
+{
+  "LD2060": {
+    "name": "LD2060",
+    "diameter": 12.7,
+    "r0": 24,
+    "k0": 0,
+    "a0": [],
+    "thickness": 3,
+    "material": "SF11",
+    "type": "biconcave",
+    "focalLength": -15,
+    "description": "N-SF11 Bi-Concave Lens, Ø12.7 mm, f = -15.0 mm, Uncoated"
+  },
+  "LD1357": {
+    "name": "LD1357",
+    "diameter": 12.7,
+    "r0": 52.1,
+    "k0": 0,
+    "a0": [],
+    "thickness": 3.5,
+    "material": "BK7",
+    "type": "biconcave",
+    "focalLength": -50,
+    "description": "N-BK7 Bi-Concave Lens, Ø12.7 mm, f = -50.0 mm, Uncoated"
+  }
+}

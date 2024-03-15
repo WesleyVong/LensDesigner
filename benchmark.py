@@ -11,7 +11,7 @@ FAST = True
 
 material_library = MaterialLibrary('materials.json')
 
-with open('thorlabs.json') as json_file:
+with open('LensLibrary/thorlabs_aspheric.json') as json_file:
     lens_library = json.load(json_file)
 
 initial_rays = []

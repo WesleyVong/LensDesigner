@@ -14,6 +14,17 @@ class MaterialLibrary:
             mat.load_from_dict(materials.get(name))
             self._library[name] = mat
 
+    def add_library(self, f: str):
+        with open(f) as json_file:
+            materials = json.load(json_file)
+        material_names = list(materials)
+        new_library = {}
+        for name in material_names:
+            mat = Material()
+            mat.load_from_dict(materials.get(name))
+            new_library[name] = mat
+        self._library.update(new_library)
+
     def get(self, name):
         return self._library.get(name)
 

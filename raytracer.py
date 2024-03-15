@@ -23,22 +23,39 @@ def calculate_refraction(theta, n0, n1):
     return math.nan
 
 
+def calculate_guess(ray: Ray, surf: surface.Surface):
+    # Makes a guess on where the intersection is.
+    # This is done crudely by finding when the ray x is equal to the lens x
+    dx = surf.pos[0] - ray.pos[0]
+    r_t = dx / ray.dx
+    s_t = 0
+    return [r_t, s_t]
+
+
 def raytrace(ray: Ray, surf: surface.Surface, atmo: Material, fast=False, epsilon=0.001):
     # Finds intersection between ray and surface
     # Atmo represents the surrounding material i.e. air
     min_t = [math.inf, math.inf]
     min_e = -1
     for e in range(surf.num_equations):
-        root = scipy.optimize.root(distance, x0=[0, 0],
+        root = scipy.optimize.root(distance, x0=calculate_guess(ray, surf),
                                    args=(ray.equation, surf.equation, 0, e),
                                    method='hybr',
-                                   tol=0.001,
-                                   options={'maxfev': 20})
-        if root.get('success'):
+                                   tol=EPSILON,
+                                   options={'maxfev': 100})
+        # root = scipy.optimize.root(distance, x0=calculate_guess(ray, surf),
+        #                            args=(ray.equation, surf.equation, 0, e),
+        #                            method='lm',
+        #                            tol=0.0001)
+        # if root.get('success'):
+            # print(root.get('fun'))
+        root_fun = root.get('fun')
+        if abs(root_fun[0]) < EPSILON and abs(root_fun[1]) < EPSILON:
             t = root.get('x')
             if 0 <= t[0] < min_t[0]:
                 min_t = t
                 min_e = e
+                # print(root)
         # else:
         #     print(root)
     if min_e == -1:
@@ -87,8 +104,9 @@ def raytrace(ray: Ray, surf: surface.Surface, atmo: Material, fast=False, epsilo
 
     if fast:
         angles_num = len(angles)
+        # If there are no refractions, then there are technically no hits
         if angles_num == 0:
-            return new_rays
+            return new_rays, False
         diff = abs(max(angles) - min(angles))
         angles_avg = sum(angles) / angles_num
         if diff > epsilon:

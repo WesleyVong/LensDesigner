@@ -30,6 +30,15 @@
     "maxMicrons": 2.5,
     "transmissive": 1
   },
+  "LAH64": {
+    "name": "LAH64",
+    "formula": "sellmeier",
+    "bVals": [1.83021453, 0.291563590, 1.28544024],
+    "cVals": [0.00904823290, 0.0330756689, 89.3675501],
+    "minMicrons": 0.334,
+    "maxMicrons": 2.325,
+    "transmissive": 1
+  },
   "UVFS": {
     "name": "UVFS",
     "formula": "sellmeier",

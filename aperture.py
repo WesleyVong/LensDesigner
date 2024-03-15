@@ -1,4 +1,6 @@
 import math
+
+import surface
 from surface import Surface
 from material import Material
 
@@ -19,10 +21,16 @@ class Aperture(Surface):
     def equation(self, t, n=0):
         t = t - math.floor(t)
         pos_x = self._pos[0]
-        if n == 0:
-            pos_y = self._pos[1] + self._inner_radius + t * self._dy
+        # if n == 1:
+        #     pos_x = self._pos[0] + 1
+        # if t > 0.5:
+        #     pos_y = self._pos[1] + self._inner_radius + ((t-0.5) * 2 * self._dy)
+        # else:
+        #     pos_y = self._pos[1] - self._inner_radius - (t * 2 * self._dy)
+        if n == 1:
+            pos_y = self._pos[1] + self._inner_radius + (t * 2 * self._dy)
         else:
-            pos_y = self._pos[1] - self._inner_radius - t * self._dy
+            pos_y = self._pos[1] - self._inner_radius - (t * 2 * self._dy)
         return [pos_x, pos_y]
 
     def tangent(self, t, n=0):

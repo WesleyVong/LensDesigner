@@ -1,0 +1,86 @@
+{
+  "LA1540": {
+    "name": "LA1540",
+    "diameter": 12.7,
+    "r0": 7.7,
+    "k0": 0,
+    "a0": [],
+    "thickness": 5.1,
+    "material": "BK7",
+    "type": "planoconvex",
+    "focalLength": 14.9,
+      "description": "N-BK7 Plano-Convex Lens, Ø1/2\", f = 15 mm, Uncoated"
+  },
+    "LA1074": {
+    "name": "LA1074",
+    "diameter": 12.7,
+    "r0": 10.3,
+    "k0": 0,
+    "a0": [],
+    "thickness": 4.0,
+    "material": "BK7",
+    "type": "planoconvex",
+    "focalLength": 19.9,
+      "description": "N-BK7 Plano-Convex Lens, Ø1/2\", f = 20 mm, Uncoated"
+  },
+    "LA1560": {
+    "name": "LA1560",
+    "diameter": 12.7,
+    "r0": 12.9,
+    "k0": 0,
+    "a0": [],
+    "thickness": 3.5,
+    "material": "BK7",
+    "type": "planoconvex",
+    "focalLength": 24.9,
+      "description": "N-BK7 Plano-Convex Lens, Ø1/2\", f = 25 mm, Uncoated"
+  },
+    "LA1289": {
+    "name": "LA1289",
+    "diameter": 12.7,
+    "r0": 15.5,
+    "k0": 0,
+    "a0": [],
+    "thickness": 3.2,
+    "material": "BK7",
+    "type": "planoconvex",
+    "focalLength": 29.9,
+      "description": "N-BK7 Plano-Convex Lens, Ø1/2\", f = 30 mm, Uncoated"
+  },
+    "LA1304": {
+    "name": "LA1304",
+    "diameter": 12.7,
+    "r0": 20.6,
+    "k0": 0,
+    "a0": [],
+    "thickness": 2.8,
+    "material": "BK7",
+    "type": "planoconvex",
+    "focalLength": 39.9,
+      "description": "N-BK7 Plano-Convex Lens, Ø1/2\", f = 40 mm, Uncoated"
+  },
+    "LA1213": {
+    "name": "LA1213",
+    "diameter": 12.7,
+    "r0": 25.8,
+    "k0": 0,
+    "a0": [],
+    "thickness": 2.6,
+    "material": "BK7",
+    "type": "planoconvex",
+    "focalLength": 49.8,
+      "description": "N-BK7 Plano-Convex Lens, Ø1/2\", f = 50 mm, Uncoated"
+  },
+    "LA1207": {
+    "name": "LA1207",
+    "diameter": 12.7,
+    "r0": 51.5,
+    "k0": 0,
+    "a0": [],
+    "thickness": 2.2,
+    "material": "BK7",
+    "type": "planoconvex",
+    "focalLength": 99.7,
+      "description": "N-BK7 Plano-Convex Lens, Ø1/2\", f = 100 mm, Uncoated"
+  }
+}

@@ -16,7 +16,6 @@ def aspheric_lens_equation(t, r, k=0, a=[]):
         poly = poly + a[idx] * t ** ((idx + 2) * 2)
     return poly + conic
 
-
 class Lens(Surface):
     def __init__(self, pos, library: MaterialLibrary, lens_dict=None, direction='left', fast=False):
         # Fast determines whether to include the top and bottom edges when calculating equations
@@ -99,7 +98,7 @@ class Lens(Surface):
             if math.isinf(self._r1):
                 self._r1 = -self._r0
                 self._k1 = self._k0
-                self._a1 = -np.array(self._a0)
+                self._a1 = np.array([0])
 
             if lens_type == "planoconvex" or lens_type == "planoconcave":
                 self._r1 = np.inf
@@ -141,16 +140,13 @@ class Lens(Surface):
         self._edge_thickness = abs(edge1 - edge0)
 
     def equation(self, t, n=0):
+        # t = t / self._diameter
         t = t - math.floor(t)
         if n == 0:    # Surface 1
-            # if t == 0:
-            #     t += EPSILON
             t_scaled = (t - 0.5) * self._diameter
             x = aspheric_lens_equation(t_scaled, self._r0, self._k0, self._a0)
             return [self._pos[0] + x, self._pos[1] + t_scaled]
         elif n == 1:  # Surface 2
-            # if t == 0:
-            #     t += EPSILON
             t_scaled = (t - 0.5) * self._diameter
             x = aspheric_lens_equation(t_scaled, self._r1, self._k1, self._a1)
             return [self._pos[0] + self._thickness + x, self._pos[1] - t_scaled]

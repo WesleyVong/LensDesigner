@@ -3,6 +3,16 @@ import math
 from material import Material
 
 
+def cosine_modulate(t):
+    return 0.5 * (math.cos(math.pi * t) + 1)
+
+
+def v_modulate(t):
+    if math.floor(t) % 2 == 0:
+        return t - math.floor(t)
+    return -(t - math.floor(t))
+
+
 class Surface(ABC):
     @abstractmethod
     # Returns [x,y] values for an equation given
