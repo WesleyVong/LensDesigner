@@ -1,10 +1,10 @@
 import math
 import scipy
 import surface
-from ray import Ray
+from ray import Ray, Emitter
 from material import Material
 
-EPSILON = 0.0001
+EPSILON = 0.00001
 
 
 def distance(T, f0, f1, n0=0, n1=0):
@@ -32,6 +32,20 @@ def calculate_guess(ray: Ray, surf: surface.Surface):
     return [r_t, s_t]
 
 
+def raytrace_multi(rays, surf: surface.Surface, atmosphere: Material, fast=False, epsilon=0.001):
+    hit_rays = []
+    pass_rays = []
+    new_rays = []
+    for r in rays:
+        result, hit = raytrace(r, surf, atmosphere, fast, epsilon)
+        if hit:
+            hit_rays.append(r)
+            new_rays = new_rays + result
+        else:
+            pass_rays.append(r)
+    return new_rays, pass_rays, hit_rays
+
+
 def raytrace(ray: Ray, surf: surface.Surface, atmo: Material, fast=False, epsilon=0.001):
     # Finds intersection between ray and surface
     # Atmo represents the surrounding material i.e. air
@@ -41,25 +55,16 @@ def raytrace(ray: Ray, surf: surface.Surface, atmo: Material, fast=False, epsilo
         root = scipy.optimize.root(distance, x0=calculate_guess(ray, surf),
                                    args=(ray.equation, surf.equation, 0, e),
                                    method='hybr',
-                                   tol=EPSILON,
-                                   options={'maxfev': 100})
-        # root = scipy.optimize.root(distance, x0=calculate_guess(ray, surf),
-        #                            args=(ray.equation, surf.equation, 0, e),
-        #                            method='lm',
-        #                            tol=0.0001)
-        # if root.get('success'):
-            # print(root.get('fun'))
+                                   options={'maxfev': 50})
         root_fun = root.get('fun')
         if abs(root_fun[0]) < EPSILON and abs(root_fun[1]) < EPSILON:
             t = root.get('x')
             if 0 <= t[0] < min_t[0]:
                 min_t = t
                 min_e = e
-                # print(root)
-        # else:
-        #     print(root)
     if min_e == -1:
-        return [ray], False
+        # If there are no hits, then nothing
+        return [], False
 
     hit_pos = ray.equation(min_t[0] + EPSILON)
     ray.end_t = min_t[0]
@@ -104,9 +109,9 @@ def raytrace(ray: Ray, surf: surface.Surface, atmo: Material, fast=False, epsilo
 
     if fast:
         angles_num = len(angles)
-        # If there are no refractions, then there are technically no hits
+        # There are no refractions, but there is a hit
         if angles_num == 0:
-            return new_rays, False
+            return [], True
         diff = abs(max(angles) - min(angles))
         angles_avg = sum(angles) / angles_num
         if diff > epsilon:

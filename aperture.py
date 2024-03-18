@@ -6,12 +6,13 @@ from material import Material
 
 
 class Aperture(Surface):
-    def __init__(self, pos, outer_diameter, inner_diameter):
+    def __init__(self, pos, outer_diameter, inner_diameter, thickness=1):
         self._pos = pos
         self._outer_diameter = outer_diameter
         self._inner_diameter = inner_diameter
         self._outer_radius = outer_diameter/2
         self._inner_radius = inner_diameter/2
+        self._thickness = thickness
         self._dy = (outer_diameter - inner_diameter)/2
         self._start_t = 0
         mat = Material()
@@ -20,16 +21,17 @@ class Aperture(Surface):
 
     def equation(self, t, n=0):
         t = t - math.floor(t)
-        pos_x = self._pos[0]
-        # if n == 1:
-        #     pos_x = self._pos[0] + 1
-        # if t > 0.5:
-        #     pos_y = self._pos[1] + self._inner_radius + ((t-0.5) * 2 * self._dy)
-        # else:
-        #     pos_y = self._pos[1] - self._inner_radius - (t * 2 * self._dy)
-        if n == 1:
+        if n == 0:
+            pos_x = self._pos[0]
+            pos_y = self._pos[1] + self._inner_radius + (t * 2 * self._dy)
+        elif n == 1:
+            pos_x = self._pos[0]
+            pos_y = self._pos[1] - self._inner_radius - (t * 2 * self._dy)
+        elif n == 2:
+            pos_x = self._pos[0] + self._thickness
             pos_y = self._pos[1] + self._inner_radius + (t * 2 * self._dy)
         else:
+            pos_x = self._pos[0] + self._thickness
             pos_y = self._pos[1] - self._inner_radius - (t * 2 * self._dy)
         return [pos_x, pos_y]
 
@@ -41,7 +43,7 @@ class Aperture(Surface):
 
     @property
     def num_equations(self):
-        return 2
+        return 4
 
     @property
     def material(self):
@@ -49,7 +51,7 @@ class Aperture(Surface):
 
     @property
     def thickness(self):
-        return 1
+        return self._thickness
 
     @property
     def pos(self):

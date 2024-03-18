@@ -16,6 +16,9 @@ class Ray(Surface):
 
         self._tangent = [math.cos(ang), math.sin(ang)]
 
+    def __str__(self):
+        return 'Type: Ray, Position: {}, Angle: {}, Wavelengths: {}'.format(self._pos, self._ang, self._wavelengths)
+
     def equation(self, t, n=0):
         # t = t - np.floor(t)
         pos_x = self._pos[0] + t * self._dx
